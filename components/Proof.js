@@ -27,7 +27,7 @@ function CountUp({ target, reduceMotion }) {
 
 const STATS = [
   { value: 1000, label: 'TEAMS REGISTERED' },
-  { value: 30, label: 'TOP 130 ADVANCED' },
+  { value: 130, label: 'TOP 130 ADVANCED' },
   { value: 3900, label: 'VOTES · #16' },
 ];
 
