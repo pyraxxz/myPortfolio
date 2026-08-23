@@ -1,2 +1,2 @@
 # myPortfolio
-Sugru Taimako portfolio site. Built for Cardtonic Upskill 4.0.
+Sugru Taimako's portfolio site.
