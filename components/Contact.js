@@ -29,7 +29,7 @@ export default function Contact() {
         </p>
 
         <h2 className="font-display text-3xl sm:text-4xl mb-8" style={{ color: 'var(--ink)', fontWeight: 500 }}>
-          Building something that needs this? Reach out.
+          Reach out...
         </h2>
 
         {/* Links */}
@@ -52,7 +52,7 @@ export default function Contact() {
 
         {/* Mailto button */}
         <a
-          href="mailto:taimakoshamsudeen@gmail.com"
+          href="mailto:sugrutaimako@gmail.com"
           className="inline-flex items-center gap-2 px-6 py-3 rounded-md font-mono text-sm tracking-wide transition-transform duration-200 hover:scale-[1.02]"
           style={{
             backgroundColor: 'var(--signal-copper)',
