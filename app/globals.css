@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-graphite: #12151A;
+  --bg-panel: #1A1E25;
+  --ink: #EDEBE4;
+  --ink-dim: #8B8F98;
+  --signal-copper: #C97B4A;
+  --signal-blue: #5B8FA8;
+  --font-fraunces: 'Fraunces', serif;
+  --font-inter: 'Inter', sans-serif;
+  --font-plex-mono: 'IBM Plex Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-graphite);
+  color: var(--ink);
+  font-family: var(--font-inter);
+  font-size: 16px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+:focus-visible {
+  outline: 2px solid var(--signal-blue);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+::selection {
+  background-color: rgba(91, 143, 168, 0.3);
+  color: var(--ink);
+}
+
+.trace-line {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: rgba(91, 143, 168, 0.15);
+  z-index: 5;
+  pointer-events: none;
+}
+@media (max-width: 1023px) { .trace-line { left: 20px; } }
+@media (min-width: 1024px) { .trace-line { left: 80px; } }
+
+.trace-pulse {
+  position: fixed;
+  width: 3px;
+  height: 80px;
+  background: linear-gradient(180deg, transparent, var(--signal-blue), transparent);
+  z-index: 6;
+  pointer-events: none;
+  opacity: 0.6;
+  filter: blur(1px);
+  will-change: transform;
+}
+@media (max-width: 1023px) { .trace-pulse { left: 19px; } }
+@media (min-width: 1024px) { .trace-pulse { left: 79px; } }
+
+.trace-node {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid var(--signal-blue);
+  background-color: var(--bg-graphite);
+  z-index: 7;
+  transition: all 0.4s ease;
+}
+.trace-node.active {
+  background-color: var(--signal-blue);
+  box-shadow: 0 0 12px rgba(91, 143, 168, 0.4);
+}
+.trace-node.current {
+  background-color: var(--signal-blue);
+  border-color: var(--signal-blue);
+  box-shadow: 0 0 16px rgba(91, 143, 168, 0.5);
+}
+
+@media (max-width: 1023px) { .section-pad { padding-left: 2.5rem; } }
+@media (min-width: 1024px) { .section-pad { padding-left: 8rem; } }
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+.skill-bar-track {
+  background-color: rgba(91, 143, 168, 0.12);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.skill-bar-fill {
+  height: 100%;
+  background-color: var(--signal-blue);
+  border-radius: 1px;
+  transform-origin: left center;
+}
+
+.phone-glow { box-shadow: inset 0 0 30px rgba(91, 143, 168, 0.08); }
+
+.card-trace-border {
+  border-left: 1px solid rgba(91, 143, 168, 0.2);
+  transition: border-color 0.3s ease;
+}
+.card-trace-border:hover, .card-trace-border:focus-within {
+  border-left-color: rgba(91, 143, 168, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .trace-pulse { display: none; }
+  .pulse-dot { animation: none; opacity: 0.7; }
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
