@@ -76,10 +76,6 @@ export default function Hero() {
           className="flex items-center gap-3 mb-12 font-mono text-xs flex-wrap"
           style={{ color: 'var(--ink-dim)' }}
         >
-          <span
-            className="inline-block w-2 h-2 rounded-full pulse-dot"
-            style={{ backgroundColor: 'var(--signal-blue)' }}
-          />
           <span>STATUS: LIVE</span>
           <span style={{ color: 'rgba(91, 143, 168, 0.3)' }}>·</span>
           <span>AZAMAN: v0.3.0 · ANDROID (KOTLIN/COMPOSE)</span>
