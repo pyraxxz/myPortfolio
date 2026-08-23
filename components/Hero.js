@@ -58,7 +58,7 @@ export default function Hero() {
           className="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.1] mb-6"
           style={{ color: 'var(--ink)', fontWeight: 500 }}
         >
-          I build the financial infrastructure I could not find, then I make it feel obvious.
+          I built the financial infrastructure I could not find, then I make it feel obvious.
         </motion.h1>
 
         {/* Subline */}
