@@ -53,7 +53,7 @@ export default function Proof() {
         {/* Narrative */}
         <p className="text-base mb-12" style={{ color: 'var(--ink-dim)', lineHeight: 1.7 }}>
           Out of roughly 1,000 registered teams in the Moolre Startup Cup, vetted on the live product and submission
-          video, Azaman was selected among the top 30. A public OTP-verified voting round followed. As a team of four,
+          video, Azaman was selected among the top 130. A public OTP-verified voting round followed. As a team of four,
           we campaigned across KNUST and the surrounding community, earned about 3,900 votes, and finished 16th. We did
           not reach the top 10 for the Accra investor pitch round, but set up a WhatsApp community channel on the spot
           to keep supporters connected through launch.
