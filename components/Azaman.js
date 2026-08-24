@@ -32,6 +32,10 @@ export default function Azaman() {
     window.open("https://youtu.be/VMPXiLlgFO0", "_blank");
   };
 
+  const openSite = () => {
+    window.open("https://azaman.me", "_blank");
+  };
+
   return (
     <section id="azaman" className="py-16">
       <motion.div
@@ -63,53 +67,50 @@ export default function Azaman() {
           ))}
         </div>
 
-        {/* Phone mockup */}
+        {/* Live phone preview — real azaman.me site */}
         <motion.div
           initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ type: "spring", stiffness: 120, damping: 20 }}
-          className="flex justify-center mb-10"
+          className="flex justify-center mb-8"
         >
-          <div
-            className="rounded-[2rem] border border-border bg-panel p-2"
-            style={{ boxShadow: "inset 0 0 30px rgba(0,0,0,0.06)" }}
+          <button
+            onClick={openSite}
+            className="group rounded-[2rem] border border-border bg-panel p-2 transition-colors duration-200 hover:border-muted/40"
+            aria-label="Visit azaman.me"
           >
             <div
-              className="rounded-[1.6rem] overflow-hidden"
-              style={{ width: 240, height: 480, background: "linear-gradient(180deg, #0a2e1a 0%, #061810 100%)" }}
+              className="rounded-[1.6rem] overflow-hidden relative"
+              style={{ width: 280, height: 560 }}
             >
-              {/* Phone UI mockup */}
-              <div className="h-full flex flex-col items-center justify-center p-6 text-center">
-                <div className="mb-6">
-                  <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-                    <path d="M18 4 L30 28 L6 28 Z" stroke="#c97b4a" strokeWidth="2" fill="none" />
-                    <circle cx="18" cy="20" r="4" fill="#c97b4a" />
-                  </svg>
-                </div>
-                <p className="text-white text-2xl font-medium mb-1" style={{ fontFamily: "var(--font-inter)" }}>
-                  Azaman
-                </p>
-                <p className="text-white/40 text-xs mb-8">A new way to send and save money.</p>
-                <div
-                  className="w-full rounded-lg px-3 py-2 text-left mb-3"
-                  style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
-                >
-                  <p className="text-white/30 text-xs">Enter your email</p>
-                </div>
-                <button
-                  className="w-full rounded-lg px-3 py-2.5 text-white text-sm font-medium"
-                  style={{ backgroundColor: "#c97b4a" }}
-                >
-                  Join waitlist
-                </button>
-              </div>
+              <iframe
+                src="https://azaman.me"
+                title="Azaman website preview"
+                className="w-full h-full border-0 pointer-events-none group-hover:opacity-90 transition-opacity"
+                style={{ transform: "scale(0.65)", transformOrigin: "top left", width: "431px", height: "862px" }}
+                loading="lazy"
+                sandbox="allow-scripts allow-same-origin"
+              />
             </div>
-          </div>
+          </button>
         </motion.div>
+
+        <p className="font-mono text-xs text-center text-muted/60 mb-8">
+          Live preview of azaman.me — tap to visit →
+        </p>
 
         {/* CTAs */}
         <div className="flex items-center gap-4 flex-wrap">
+          <span className="offset-wrap offset-btn-wrap rounded">
+            <button
+              onClick={openSite}
+              className="offset-btn px-5 py-2.5 rounded font-mono text-sm tracking-wide"
+              style={{ backgroundColor: "var(--accent)", color: "var(--bg)" }}
+            >
+              Visit azaman.me
+            </button>
+          </span>
           <span className="offset-wrap offset-btn-wrap rounded">
             <button
               onClick={scrollToContact}
