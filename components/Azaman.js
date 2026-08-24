@@ -24,12 +24,8 @@ const FEATURES = [
 export default function Azaman() {
   const reduceMotion = useReducedMotion();
 
-  const scrollToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
   return (
-    <section id="azaman" className="section-pad min-h-screen flex flex-col justify-center px-6 sm:px-8 py-24">
+    <section id="azaman" className="section-pad flex flex-col justify-center px-6 sm:px-8 py-16 lg:py-18">
       <motion.div
         initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -38,7 +34,7 @@ export default function Azaman() {
         className="max-w-5xl w-full"
       >
         {/* Label */}
-        <p className="font-mono text-xs tracking-wider mb-4" style={{ color: 'var(--signal-blue)' }}>
+        <p className="font-mono text-xs tracking-wider mb-4" style={{ color: 'var(--accent)' }}>
           NODE-03 · FLAGSHIP PRODUCT
         </p>
 
@@ -48,26 +44,31 @@ export default function Azaman() {
         </h2>
 
         {/* Description */}
-        <p className="text-base sm:text-lg mb-10 max-w-2xl" style={{ color: 'var(--ink-dim)', lineHeight: 1.65 }}>
+        <p className="text-base sm:text-lg mb-8 max-w-2xl" style={{ color: 'var(--ink-dim)', lineHeight: 1.65 }}>
           A fintech super-app for Ghana. P2P transfer with escrow, digitized Susu, local marketplace, and social chat in one product.
         </p>
 
-        {/* Phone frame mockup */}
-        <div className="mb-12 flex justify-center">
+        {/* Phone frame mockup with scroll-driven perspective settle */}
+        <div className="mb-10 flex justify-center" style={{ perspective: '1000px' }}>
           <motion.div
-            initial={reduceMotion ? {} : { opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
+            initial={
+              reduceMotion
+                ? {}
+                : { opacity: 0, scale: 0.95, rotateY: -6, rotateX: 2 }
+            }
+            whileInView={{ opacity: 1, scale: 1, rotateY: 0, rotateX: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.7, ease: 'easeOut' }}
+            style={{ transformPerspective: 1000 }}
             className="relative"
           >
             {/* Phone frame */}
             <div
-              className="phone-glow rounded-[2rem] border-2 overflow-hidden"
+              className="phone-glow rounded-[2rem] border overflow-hidden"
               style={{
-                borderColor: 'rgba(91, 143, 168, 0.2)',
-                width: '260px',
-                height: '520px',
+                borderColor: 'var(--hairline)',
+                width: '240px',
+                height: '480px',
                 backgroundColor: 'var(--bg-panel)',
               }}
             >
@@ -83,13 +84,13 @@ export default function Azaman() {
             {/* Notch indicator */}
             <div
               className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 rounded-b-2xl"
-              style={{ backgroundColor: 'var(--bg-graphite)' }}
+              style={{ backgroundColor: 'var(--bg)' }}
             />
           </motion.div>
         </div>
 
-        {/* Feature list */}
-        <div className="space-y-3 mb-10">
+        {/* Feature grid: 2x2 desktop, single column mobile */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 mb-8">
           {FEATURES.map((feat, i) => (
             <motion.div
               key={feat.label}
@@ -97,13 +98,13 @@ export default function Azaman() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.08, ease: 'linear' }}
-              className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-4 py-2 border-b"
-              style={{ borderColor: 'rgba(91, 143, 168, 0.08)' }}
+              className="flex flex-col gap-1 py-3 border-b"
+              style={{ borderColor: 'var(--hairline)' }}
             >
-              <span className="font-mono text-xs whitespace-nowrap" style={{ color: 'var(--signal-blue)' }}>
+              <span className="font-mono text-xs" style={{ color: 'var(--accent)' }}>
                 {feat.label}
               </span>
-              <span className="text-sm flex-1" style={{ color: 'var(--ink-dim)' }}>
+              <span className="text-sm" style={{ color: 'var(--ink-dim)' }}>
                 {feat.desc}
               </span>
             </motion.div>
@@ -114,7 +115,7 @@ export default function Azaman() {
         <p className="text-sm mb-2" style={{ color: 'var(--ink-dim)' }}>
           Native Android rebuild in Kotlin/Jetpack Compose, led solo. iOS in Swift planned next.
         </p>
-        <p className="text-sm mb-8" style={{ color: 'var(--ink-dim)' }}>
+        <p className="text-sm mb-6" style={{ color: 'var(--ink-dim)' }}>
           Azaman Digital Limited is a registered company, actively preparing for Bank of Ghana clearance.
         </p>
 
@@ -124,9 +125,9 @@ export default function Azaman() {
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 font-mono text-sm tracking-wide transition-colors duration-200"
-          style={{ color: 'var(--signal-copper)' }}
+          style={{ color: 'var(--accent)' }}
         >
-          Open azaman.me <span style={{ color: 'var(--signal-copper)' }}>[&#8599;]</span>
+          Open azaman.me <span style={{ color: 'var(--accent)' }}>[&#8599;]</span>
         </a>
       </motion.div>
     </section>

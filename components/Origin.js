@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 
 const NODES = [
@@ -41,107 +41,112 @@ const NODES = [
 export default function Origin() {
   const [expanded, setExpanded] = useState(null);
   const reduceMotion = useReducedMotion();
+  const stripRef = useRef(null);
 
   const toggle = (i) => setExpanded(expanded === i ? null : i);
 
   return (
-    <section id="origin" className="section-pad min-h-screen flex flex-col justify-center px-6 sm:px-8 py-24">
+    <section id="origin" className="section-pad flex flex-col justify-center px-6 sm:px-8 py-16 lg:py-20">
       <motion.div
         initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.3 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
-        <p className="font-mono text-xs tracking-wider mb-4" style={{ color: 'var(--signal-blue)' }}>
+        <p className="font-mono text-xs tracking-wider mb-4" style={{ color: 'var(--accent)' }}>
           NODE-02 · ORIGIN
         </p>
-        <h2 className="font-display text-3xl sm:text-4xl mb-12" style={{ color: 'var(--ink)', fontWeight: 500 }}>
+        <h2 className="font-display text-3xl sm:text-4xl mb-8" style={{ color: 'var(--ink)', fontWeight: 500 }}>
           The signal path, traced.
         </h2>
 
-        {/* Timeline */}
-        <div className="space-y-1">
-          {NODES.map((node, i) => (
-            <div key={node.tag} className="relative">
-              {/* Horizontal line between nodes (desktop) */}
-              {i < NODES.length - 1 && (
-                <div
-                  className="hidden lg:block absolute top-0 left-0 right-0 h-px"
-                  style={{ backgroundColor: 'rgba(91, 143, 168, 0.1)', top: '100%' }}
-                />
-              )}
-
-              <button
-                onClick={() => toggle(i)}
-                className="w-full text-left py-4 group"
-                aria-expanded={expanded === i}
+        {/* Horizontal scroll-snap strip */}
+        <div className="relative">
+          <div
+            ref={stripRef}
+            className="snap-strip flex gap-4 overflow-x-auto no-scrollbar pb-2 -mx-1 px-1"
+          >
+            {NODES.map((node, i) => (
+              <div
+                key={node.tag}
+                className="snap-item flex-shrink-0"
+                style={{ width: 'min(340px, 82vw)' }}
               >
-                <div className="flex items-start gap-4 sm:gap-6">
-                  {/* Tag + dot */}
-                  <div className="flex flex-col items-center gap-2 flex-shrink-0">
-                    <div
-                      className="w-3 h-3 rounded-full border-2 transition-all"
-                      style={{
-                        borderColor: 'var(--signal-blue)',
-                        backgroundColor: node.active ? 'var(--signal-blue)' : 'var(--bg-graphite)',
-                        boxShadow: node.active ? '0 0 12px rgba(91, 143, 168, 0.4)' : 'none',
-                      }}
-                    />
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-baseline gap-3 sm:gap-4 flex-wrap mb-1">
-                      <span className="font-mono text-xs" style={{ color: 'var(--signal-blue)' }}>
-                        {node.tag}
-                      </span>
-                      <span className="font-mono text-xs" style={{ color: 'var(--ink-dim)' }}>
-                        {node.dates}
-                      </span>
-                    </div>
-                    <h3 className="font-display text-lg sm:text-xl" style={{ color: 'var(--ink)' }}>
-                      {node.label}
-                    </h3>
-                    <p className="text-sm mt-1" style={{ color: 'var(--ink-dim)' }}>
-                      {node.short}
-                    </p>
-                  </div>
-
-                  {/* Expand indicator */}
-                  <div
-                    className="font-mono text-xs transition-transform duration-300 mt-1"
+                <span className="offset-wrap offset-block offset-card-wrap rounded-lg">
+                  <button
+                    onClick={() => toggle(i)}
+                    className="offset-btn w-full text-left p-5 rounded-lg"
                     style={{
-                      color: 'var(--ink-dim)',
-                      transform: expanded === i ? 'rotate(45deg)' : 'rotate(0deg)',
+                      backgroundColor: 'var(--bg-panel)',
+                      border: '1px solid var(--hairline)',
                     }}
+                    aria-expanded={expanded === i}
                   >
-                    +
-                  </div>
-                </div>
-              </button>
+                    <div className="flex items-start gap-3">
+                      <div
+                        className="w-3 h-3 rounded-full border-2 flex-shrink-0 mt-1"
+                        style={{
+                          borderColor: 'var(--hairline-strong)',
+                          backgroundColor: node.active ? 'var(--accent)' : 'var(--bg-panel)',
+                          boxShadow: node.active ? '0 0 12px rgba(201, 123, 74, 0.4)' : 'none',
+                        }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-baseline gap-3 flex-wrap mb-1">
+                          <span className="font-mono text-xs" style={{ color: 'var(--accent)' }}>
+                            {node.tag}
+                          </span>
+                          <span className="font-mono text-xs" style={{ color: 'var(--ink-dim)' }}>
+                            {node.dates}
+                          </span>
+                        </div>
+                        <h3 className="font-display text-lg" style={{ color: 'var(--ink)' }}>
+                          {node.label}
+                        </h3>
+                        <p className="text-sm mt-1" style={{ color: 'var(--ink-dim)' }}>
+                          {node.short}
+                        </p>
+                      </div>
+                      <div
+                        className="font-mono text-xs transition-transform duration-300 mt-1 flex-shrink-0"
+                        style={{
+                          color: 'var(--ink-dim)',
+                          transform: expanded === i ? 'rotate(45deg)' : 'rotate(0deg)',
+                        }}
+                      >
+                        +
+                      </div>
+                    </div>
 
-              {/* Expandable detail */}
-              <AnimatePresence initial={false}>
-                {expanded === i && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: 'auto', opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.3, ease: 'easeOut' }}
-                    className="overflow-hidden"
-                  >
-                    <p
-                      className="text-sm pl-8 sm:pl-12 pr-4 py-3 max-w-xl"
-                      style={{ color: 'var(--ink)', lineHeight: 1.7 }}
-                    >
-                      {node.detail}
-                    </p>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          ))}
+                    <AnimatePresence initial={false}>
+                      {expanded === i && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3, ease: 'easeOut' }}
+                          className="overflow-hidden"
+                        >
+                          <p
+                            className="text-sm pt-3 mt-3"
+                            style={{ color: 'var(--ink)', lineHeight: 1.7, borderTop: '1px solid var(--hairline)' }}
+                          >
+                            {node.detail}
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </button>
+                </span>
+              </div>
+            ))}
+          </div>
+          {/* Fading edge hint that there's more to scroll */}
+          <div className="scroll-hint-fade hidden sm:block" aria-hidden="true" />
         </div>
+        <p className="font-mono text-xs mt-3" style={{ color: 'var(--ink-dim)' }}>
+          &#8592; SWIPE TO SEE ALL FOUR &#8594;
+        </p>
       </motion.div>
     </section>
   );

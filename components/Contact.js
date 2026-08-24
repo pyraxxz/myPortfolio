@@ -24,7 +24,7 @@ export default function Contact() {
         transition={{ duration: 0.5, ease: 'easeOut' }}
         className="max-w-xl w-full"
       >
-        <p className="font-mono text-xs tracking-wider mb-4" style={{ color: 'var(--signal-blue)' }}>
+        <p className="font-mono text-xs tracking-wider mb-4" style={{ color: 'var(--accent)' }}>
           NODE-07 · CONTACT
         </p>
 
@@ -42,31 +42,33 @@ export default function Contact() {
               rel="noopener noreferrer"
               className="block font-mono text-sm py-2 transition-colors duration-200"
               style={{ color: 'var(--ink-dim)' }}
-              onMouseEnter={(e) => (e.target.style.color = 'var(--signal-blue)')}
+              onMouseEnter={(e) => (e.target.style.color = 'var(--accent)')}
               onMouseLeave={(e) => (e.target.style.color = 'var(--ink-dim)')}
             >
-              <span style={{ color: 'var(--signal-blue)' }}>&#8594;</span> {link.label}
+              <span style={{ color: 'var(--accent)' }}>&#8594;</span> {link.label}
             </a>
           ))}
         </div>
 
         {/* Mailto button */}
-        <a
-          href="mailto:sugrutaimako@gmail.com"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-md font-mono text-sm tracking-wide transition-transform duration-200 hover:scale-[1.02]"
-          style={{
-            backgroundColor: 'var(--signal-copper)',
-            color: 'var(--bg-graphite)',
-          }}
-        >
-          Send an email
-        </a>
+        <span className="offset-wrap offset-btn-wrap rounded-md">
+          <a
+            href="mailto:sugrutaimako@gmail.com"
+            className="offset-btn inline-flex items-center gap-2 px-6 py-3 rounded-md font-mono text-sm tracking-wide"
+            style={{
+              backgroundColor: 'var(--accent)',
+              color: 'var(--bg)',
+            }}
+          >
+            Send an email
+          </a>
+        </span>
       </motion.div>
 
       {/* Footer */}
       <div
         className="w-full mt-20 pt-6 border-t"
-        style={{ borderColor: 'rgba(91, 143, 168, 0.08)' }}
+        style={{ borderColor: 'var(--hairline)' }}
       >
         <p className="font-mono text-xs" style={{ color: 'var(--ink-dim)' }}>
           AZAMAN.ME · BUILT IN GHANA · 2026

@@ -35,14 +35,32 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: '#12151A',
+  themeColor: '#000000',
   width: 'device-width',
   initialScale: 1,
 };
 
+// Runs before first paint to avoid a flash of the wrong theme.
+// Reads localStorage, falls back to prefers-color-scheme, sets
+// data-theme on <html> and syncs the theme-color meta tag.
+const NO_FLASH_SCRIPT = `
+(function () {
+  try {
+    var stored = localStorage.getItem('azm-portfolio-theme');
+    var theme = stored || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    document.documentElement.setAttribute('data-theme', theme);
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', theme === 'light' ? '#FFFFFF' : '#000000');
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${inter.variable} ${plexMono.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: NO_FLASH_SCRIPT }} />
+      </head>
       <body>{children}</body>
     </html>
   );

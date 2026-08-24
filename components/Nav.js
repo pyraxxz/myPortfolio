@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ThemeToggle from './ThemeToggle';
 
 const NAV_ITEMS = [
   { id: 'origin', label: 'ORIGIN' },
   { id: 'azaman', label: 'AZAMAN' },
   { id: 'builds', label: 'BUILDS' },
   { id: 'stack', label: 'STACK' },
-  { id: 'proof', label: 'PROOF' },
+  { id: 'credentials', label: 'CREDENTIALS' },
 ];
 
 export default function Nav({ activeSection }) {
@@ -16,7 +17,7 @@ export default function Nav({ activeSection }) {
 
   useEffect(() => {
     const handleScroll = () => {
-      setVisible(window.scrollY > window.innerHeight * 0.8);
+      setVisible(window.scrollY > window.innerHeight * 0.6);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
@@ -37,7 +38,7 @@ export default function Nav({ activeSection }) {
           exit={{ y: -60, opacity: 0 }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
           className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md"
-          style={{ backgroundColor: 'rgba(18, 21, 26, 0.9)', borderBottom: '1px solid rgba(91, 143, 168, 0.1)' }}
+          style={{ backgroundColor: 'var(--bg)', opacity: 0.92, borderBottom: '1px solid var(--hairline)' }}
         >
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
             {/* Name */}
@@ -57,7 +58,7 @@ export default function Nav({ activeSection }) {
                   onClick={() => scrollTo(item.id)}
                   className="font-mono text-xs uppercase tracking-wider whitespace-nowrap transition-colors duration-200"
                   style={{
-                    color: activeSection === item.id ? 'var(--signal-blue)' : 'var(--ink-dim)',
+                    color: activeSection === item.id ? 'var(--accent)' : 'var(--ink-dim)',
                   }}
                 >
                   {item.label}
@@ -65,17 +66,20 @@ export default function Nav({ activeSection }) {
               ))}
             </div>
 
-            {/* Contact pill */}
-            <button
-              onClick={() => scrollTo('contact')}
-              className="font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded-full whitespace-nowrap transition-colors duration-200"
-              style={{
-                backgroundColor: 'var(--signal-copper)',
-                color: 'var(--bg-graphite)',
-              }}
-            >
-              CONTACT
-            </button>
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <ThemeToggle />
+              {/* Contact pill */}
+              <button
+                onClick={() => scrollTo('contact')}
+                className="font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded-full whitespace-nowrap transition-colors duration-200"
+                style={{
+                  backgroundColor: 'var(--accent)',
+                  color: 'var(--bg)',
+                }}
+              >
+                CONTACT
+              </button>
+            </div>
           </div>
         </motion.nav>
       )}

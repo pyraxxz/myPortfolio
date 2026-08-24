@@ -8,8 +8,10 @@ import Origin from '../components/Origin';
 import Azaman from '../components/Azaman';
 import BuildLog from '../components/BuildLog';
 import Stack from '../components/Stack';
-import Proof from '../components/Proof';
+import Credentials from '../components/Credentials';
 import Contact from '../components/Contact';
+
+const SECTION_IDS = ['hero', 'origin', 'azaman', 'builds', 'stack', 'credentials', 'contact'];
 
 export default function Page() {
   const [activeSection, setActiveSection] = useState('hero');
@@ -18,8 +20,6 @@ export default function Page() {
   const pulseRef = useRef(null);
 
   useEffect(() => {
-    const sections = ['hero', 'origin', 'azaman', 'builds', 'stack', 'proof', 'contact'];
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -31,13 +31,13 @@ export default function Page() {
       { rootMargin: '-40% 0px -50% 0px' }
     );
 
-    sections.forEach((id) => {
+    SECTION_IDS.forEach((id) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
 
     // Calculate node positions after mount
-    const positions = sections.map((id) => {
+    const positions = SECTION_IDS.map((id) => {
       const el = document.getElementById(id);
       if (el) return el.offsetTop + 20;
       return 0;
@@ -83,7 +83,7 @@ export default function Page() {
 
       {/* Trace nodes */}
       {nodePositions.map((top, i) => {
-        const sectionId = ['hero', 'origin', 'azaman', 'builds', 'stack', 'proof', 'contact'][i];
+        const sectionId = SECTION_IDS[i];
         return (
           <div
             key={sectionId}
@@ -101,7 +101,7 @@ export default function Page() {
         <Azaman />
         <BuildLog />
         <Stack />
-        <Proof />
+        <Credentials />
         <Contact />
       </main>
     </>

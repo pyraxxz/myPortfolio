@@ -1,9 +1,18 @@
 'use client';
 
+import { useState, useRef } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 
 export default function Hero() {
   const reduceMotion = useReducedMotion();
+  const [ringActive, setRingActive] = useState(false);
+  const ringTimeout = useRef(null);
+
+  const flashRing = () => {
+    setRingActive(true);
+    if (ringTimeout.current) clearTimeout(ringTimeout.current);
+    ringTimeout.current = setTimeout(() => setRingActive(false), 400);
+  };
 
   const containerVariants = {
     hidden: {},
@@ -32,10 +41,13 @@ export default function Hero() {
     window.open('https://youtu.be/VMPXiLlgFO0', '_blank');
   };
 
+  // SVG ring perimeter for a 96px-diameter circle (r=47, stroke centered) — used for the stroke-draw animation
+  const ringCircumference = 2 * Math.PI * 47;
+
   return (
     <section
       id="hero"
-      className="section-pad min-h-screen flex flex-col justify-center relative px-6 sm:px-8 py-20"
+      className="section-pad min-h-[70vh] lg:min-h-[65vh] flex flex-col justify-center relative px-6 sm:px-8 py-16 lg:py-14"
     >
       <motion.div
         variants={containerVariants}
@@ -43,14 +55,61 @@ export default function Hero() {
         animate="show"
         className="max-w-2xl"
       >
-        {/* Eyebrow */}
-        <motion.p
-          variants={itemVariants}
-          className="font-mono text-xs tracking-wider mb-8"
-          style={{ color: 'var(--ink-dim)' }}
-        >
-          SOFTWARE ENGINEER · ELECTRICAL ENGINEERING, KNUST · ACCRA/TAMALE, GHANA
-        </motion.p>
+        {/* Eyebrow + profile photo */}
+        <motion.div variants={itemVariants} className="flex items-center gap-4 mb-8">
+          <div
+            className="relative flex-shrink-0"
+            style={{ width: 96, height: 96 }}
+            onMouseEnter={flashRing}
+            onTouchStart={flashRing}
+            tabIndex={0}
+            onFocus={flashRing}
+            role="img"
+            aria-label="Sugru Taimako, profile photo"
+          >
+            <img
+              src="/myprofile.jpg"
+              alt="Sugru Taimako"
+              width={96}
+              height={96}
+              className="rounded-full object-cover w-full h-full"
+              style={{ display: 'block' }}
+            />
+            <svg
+              className="absolute top-0 left-0 pointer-events-none"
+              width="96"
+              height="96"
+              viewBox="0 0 96 96"
+            >
+              <circle
+                cx="48"
+                cy="48"
+                r="47"
+                fill="none"
+                stroke={ringActive ? 'var(--accent)' : 'var(--hairline-strong)'}
+                strokeWidth="1"
+                className="profile-photo-ring"
+                strokeDasharray={reduceMotion ? undefined : ringCircumference}
+                strokeDashoffset={reduceMotion ? 0 : ringCircumference}
+                style={
+                  reduceMotion
+                    ? {}
+                    : {
+                        animation: 'draw-ring 0.7s ease-out 0.3s forwards',
+                      }
+                }
+              />
+            </svg>
+          </div>
+          <p
+            className="font-mono text-xs tracking-wider"
+            style={{ color: 'var(--ink-dim)' }}
+          >
+            SOFTWARE ENGINEER · ELECTRICAL ENGINEERING, KNUST
+            <br />
+            ACCRA/TAMALE, GHANA
+          </p>
+        </motion.div>
 
         {/* Display line */}
         <motion.h1
@@ -64,7 +123,7 @@ export default function Hero() {
         {/* Subline */}
         <motion.p
           variants={itemVariants}
-          className="text-base sm:text-lg mb-10 max-w-xl"
+          className="text-base sm:text-lg mb-8 max-w-xl"
           style={{ color: 'var(--ink-dim)', lineHeight: 1.65 }}
         >
           Currently building Azaman, a fintech super-app for Ghana, and Wayfinder, a vision-AI QA tool for mobile apps.
@@ -73,32 +132,34 @@ export default function Hero() {
         {/* Live status line */}
         <motion.div
           variants={itemVariants}
-          className="flex items-center gap-3 mb-12 font-mono text-xs flex-wrap"
+          className="flex items-center gap-3 mb-10 font-mono text-xs flex-wrap"
           style={{ color: 'var(--ink-dim)' }}
         >
-          <span style={{ color: 'rgba(91, 143, 168, 0.3)' }}>·</span>
+          <span style={{ color: 'var(--hairline)' }}>·</span>
           <span>AZAMAN: v0.3.0 · ANDROID (KOTLIN/COMPOSE)</span>
-          <span style={{ color: 'rgba(91, 143, 168, 0.3)' }}>·</span>
+          <span style={{ color: 'var(--hairline)' }}>·</span>
           <span>LAST DEPLOY: AUG 2026</span>
         </motion.div>
 
         {/* CTAs */}
-        <motion.div variants={itemVariants} className="flex items-center gap-4 flex-wrap">
-          <button
-            onClick={scrollToAzaman}
-            className="px-6 py-3 rounded-md font-mono text-sm tracking-wide transition-transform duration-200 hover:scale-[1.02]"
-            style={{
-              backgroundColor: 'var(--signal-copper)',
-              color: 'var(--bg-graphite)',
-            }}
-          >
-            View Azaman
-          </button>
+        <motion.div variants={itemVariants} className="flex items-center gap-6 flex-wrap">
+          <span className="offset-wrap offset-btn-wrap rounded-md">
+            <button
+              onClick={scrollToAzaman}
+              className="offset-btn px-6 py-3 rounded-md font-mono text-sm tracking-wide"
+              style={{
+                backgroundColor: 'var(--accent)',
+                color: 'var(--bg)',
+              }}
+            >
+              View Azaman
+            </button>
+          </span>
           <button
             onClick={openVideo}
             className="px-6 py-3 rounded-md font-mono text-sm tracking-wide border transition-colors duration-200"
             style={{
-              borderColor: 'rgba(91, 143, 168, 0.3)',
+              borderColor: 'var(--hairline)',
               color: 'var(--ink-dim)',
             }}
           >
@@ -106,6 +167,14 @@ export default function Hero() {
           </button>
         </motion.div>
       </motion.div>
+
+      <style jsx>{`
+        @keyframes draw-ring {
+          to {
+            stroke-dashoffset: 0;
+          }
+        }
+      `}</style>
     </section>
   );
 }

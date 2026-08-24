@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, useInView, useReducedMotion, animate } from 'framer-motion';
+import Lightbox from './Lightbox';
 
 function CountUp({ target, reduceMotion }) {
   const [value, setValue] = useState(0);
@@ -31,11 +32,12 @@ const STATS = [
   { value: 3900, label: 'VOTES · #16' },
 ];
 
-export default function Proof() {
+export default function Credentials() {
   const reduceMotion = useReducedMotion();
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   return (
-    <section id="proof" className="section-pad min-h-screen flex flex-col justify-center px-6 sm:px-8 py-24">
+    <section id="credentials" className="section-pad flex flex-col justify-center px-6 sm:px-8 py-16 lg:py-18">
       <motion.div
         initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -43,15 +45,46 @@ export default function Proof() {
         transition={{ duration: 0.5, ease: 'easeOut' }}
         className="max-w-2xl w-full"
       >
-        <p className="font-mono text-xs tracking-wider mb-4" style={{ color: 'var(--signal-blue)' }}>
-          NODE-06 · RECOGNITION
+        <p className="font-mono text-xs tracking-wider mb-4" style={{ color: 'var(--accent)' }}>
+          NODE-06 · CREDENTIALS
         </p>
         <h2 className="font-display text-3xl sm:text-4xl mb-8" style={{ color: 'var(--ink)', fontWeight: 500 }}>
-          Moolre Startup Cup.
+          Paper proof, and traction proof.
         </h2>
 
+        {/* Certificate card — offset-duplicate frame, click to open lightbox */}
+        <motion.div
+          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
+          className="mb-10 max-w-xs"
+        >
+          <span className="offset-wrap offset-block offset-card-wrap rounded-lg">
+            <button
+              onClick={() => setLightboxOpen(true)}
+              className="offset-btn block w-full rounded-lg overflow-hidden text-left"
+              style={{ border: '1px solid var(--hairline)', backgroundColor: 'var(--bg-panel)' }}
+              aria-label="Open the Azaman Digital Limited business registration certificate, full screen"
+            >
+              <img
+                src="/azaman-certificate.jpg"
+                alt="Azaman Digital Limited certificate of incorporation"
+                className="w-full block"
+                style={{ maxHeight: '340px', objectFit: 'cover' }}
+              />
+            </button>
+          </span>
+          <p className="font-mono text-xs mt-3 tracking-wider" style={{ color: 'var(--ink-dim)' }}>
+            AZAMAN DIGITAL LIMITED · BUSINESS REGISTRATION
+          </p>
+          <p className="font-mono text-xs mt-1" style={{ color: 'var(--ink-dim)' }}>
+            TAP TO VIEW FULL SIZE
+          </p>
+        </motion.div>
+
         {/* Narrative */}
-        <p className="text-base mb-12" style={{ color: 'var(--ink-dim)', lineHeight: 1.7 }}>
+        <p className="text-base mb-10" style={{ color: 'var(--ink-dim)', lineHeight: 1.7 }}>
           Out of roughly 1,000 registered teams in the Moolre Startup Cup, vetted on the live product and submission
           video, Azaman was selected among the top 130. A public OTP-verified voting round followed. As a team of four,
           we campaigned across KNUST and the surrounding community, earned about 3,900 votes, and finished 16th. We did
@@ -60,7 +93,7 @@ export default function Proof() {
         </p>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-10">
           {STATS.map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -86,7 +119,7 @@ export default function Proof() {
           </p>
           <div
             className="relative rounded-lg overflow-hidden border"
-            style={{ borderColor: 'rgba(91, 143, 168, 0.15)' }}
+            style={{ borderColor: 'var(--hairline)' }}
           >
             <a
               href="https://youtu.be/VMPXiLlgFO0"
@@ -103,10 +136,10 @@ export default function Proof() {
                 <div className="flex flex-col items-center gap-3">
                   <div
                     className="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
-                    style={{ backgroundColor: 'var(--signal-copper)' }}
+                    style={{ backgroundColor: 'var(--accent)' }}
                   >
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                      <path d="M8 5v14l11-7z" fill="var(--bg-graphite)" />
+                      <path d="M8 5v14l11-7z" fill="var(--bg)" />
                     </svg>
                   </div>
                   <span className="font-mono text-xs" style={{ color: 'var(--ink-dim)' }}>
@@ -116,7 +149,7 @@ export default function Proof() {
               </div>
               <div
                 className="px-4 py-3 border-t"
-                style={{ borderColor: 'rgba(91, 143, 168, 0.1)' }}
+                style={{ borderColor: 'var(--hairline)' }}
               >
                 <p className="text-sm" style={{ color: 'var(--ink)' }}>
                   Moolre Startup Cup Submission
@@ -132,6 +165,13 @@ export default function Proof() {
           </p>
         </div>
       </motion.div>
+
+      <Lightbox
+        src={lightboxOpen ? '/azaman-certificate.jpg' : null}
+        alt="Azaman Digital Limited certificate of incorporation, full size"
+        caption="AZAMAN DIGITAL LIMITED · BUSINESS REGISTRATION"
+        onClose={() => setLightboxOpen(false)}
+      />
     </section>
   );
 }

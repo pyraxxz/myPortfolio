@@ -23,17 +23,17 @@ export default function BuildLog() {
   ];
 
   return (
-    <section id="builds" className="section-pad min-h-screen flex flex-col justify-center px-6 sm:px-8 py-24">
+    <section id="builds" className="section-pad flex flex-col justify-center px-6 sm:px-8 py-16 lg:py-18">
       <motion.div
         initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.2 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
       >
-        <p className="font-mono text-xs tracking-wider mb-4" style={{ color: 'var(--signal-blue)' }}>
+        <p className="font-mono text-xs tracking-wider mb-4" style={{ color: 'var(--accent)' }}>
           NODE-04 · BUILD LOG
         </p>
-        <h2 className="font-display text-3xl sm:text-4xl mb-12" style={{ color: 'var(--ink)', fontWeight: 500 }}>
+        <h2 className="font-display text-3xl sm:text-4xl mb-10" style={{ color: 'var(--ink)', fontWeight: 500 }}>
           Side work and earlier builds.
         </h2>
 
@@ -47,7 +47,7 @@ export default function BuildLog() {
               transition={{ duration: 0.4, delay: i * 0.1, ease: 'easeOut' }}
               className={`card-trace-border pl-5 pr-5 py-6 ${i === 0 ? 'lg:col-span-3' : 'lg:col-span-2'}`}
             >
-              <span className="font-mono text-xs tracking-wider block mb-3" style={{ color: 'var(--signal-blue)' }}>
+              <span className="font-mono text-xs tracking-wider block mb-3" style={{ color: 'var(--accent)' }}>
                 {card.label}
               </span>
               <h3 className="font-display text-xl sm:text-2xl mb-3" style={{ color: 'var(--ink)' }}>
@@ -59,7 +59,7 @@ export default function BuildLog() {
               {card.showTag && (
                 <span
                   className="inline-block font-mono text-xs px-2 py-1 rounded"
-                  style={{ color: 'var(--signal-blue)', backgroundColor: 'rgba(91, 143, 168, 0.1)' }}
+                  style={{ color: 'var(--accent)', backgroundColor: 'var(--bg-panel)', border: '1px solid var(--hairline)' }}
                 >
                   {card.tag}
                 </span>
