@@ -1,68 +1,41 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-
-const STORAGE_KEY = 'azm-portfolio-theme';
+import { Monitor, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/cn";
 
 export default function ThemeToggle() {
-  const [theme, setTheme] = useState(null);
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
-    const current = document.documentElement.getAttribute('data-theme') || 'dark';
-    setTheme(current);
+    setMounted(true);
   }, []);
 
-  const toggle = () => {
-    const next = theme === 'light' ? 'dark' : 'light';
-    setTheme(next);
-    document.documentElement.setAttribute('data-theme', next);
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch (e) {}
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', next === 'light' ? '#FFFFFF' : '#000000');
-  };
+  if (!mounted) return null;
 
-  if (!theme) {
-    // Avoid rendering the wrong glyph before mount reads the real value
-    return <div className="theme-toggle" aria-hidden="true" />;
-  }
+  const buttons = [
+    { label: "system", icon: <Monitor width={13} height={13} />, active: theme === "system" },
+    { label: "dark", icon: <Moon width={13} height={13} />, active: theme === "dark" },
+    { label: "light", icon: <Sun width={13} height={13} />, active: theme === "light" },
+  ];
 
   return (
-    <button
-      onClick={toggle}
-      className="theme-toggle"
-      aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
-      title={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'}
-    >
-      <AnimatePresence mode="wait" initial={false}>
-        {theme === 'light' ? (
-          <motion.span
-            key="ring"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-          >
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <circle cx="6" cy="6" r="4.5" stroke="var(--ink)" strokeWidth="1.4" />
-            </svg>
-          </motion.span>
-        ) : (
-          <motion.span
-            key="dot"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-          >
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <circle cx="6" cy="6" r="4.5" fill="var(--ink)" />
-            </svg>
-          </motion.span>
-        )}
-      </AnimatePresence>
-    </button>
+    <span className="flex w-fit items-center gap-0.5 overflow-hidden rounded-[6px] bg-panel p-[2px] border border-border">
+      {buttons.map(({ label, icon, active }) => (
+        <button
+          type="button"
+          key={label}
+          onClick={() => setTheme(label)}
+          className={cn(
+            "flex h-6 w-6 items-center justify-center rounded-[4px] transition-all hover:opacity-50",
+            active ? "bg-hover text-foreground" : "text-muted"
+          )}
+        >
+          {icon}
+        </button>
+      ))}
+    </span>
   );
 }

@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useRef } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { useState, useRef } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import * as FadeIn from "@/components/motion/staggers/fade";
 
 export default function Hero() {
   const reduceMotion = useReducedMotion();
@@ -14,165 +15,125 @@ export default function Hero() {
     ringTimeout.current = setTimeout(() => setRingActive(false), 400);
   };
 
-  const containerVariants = {
-    hidden: {},
-    show: {
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
-  };
-
-  const itemVariants = reduceMotion
-    ? {
-        hidden: { opacity: 0 },
-        show: { opacity: 1, transition: { duration: 0.4 } },
-      }
-    : {
-        hidden: { opacity: 0, y: 12 },
-        show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
-      };
-
   const scrollToAzaman = () => {
-    document.getElementById('azaman')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById("azaman")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const openVideo = () => {
-    window.open('https://youtu.be/VMPXiLlgFO0', '_blank');
+    window.open("https://youtu.be/VMPXiLlgFO0", "_blank");
   };
 
-  // SVG ring perimeter for a 96px-diameter circle (r=47, stroke centered) — used for the stroke-draw animation
   const ringCircumference = 2 * Math.PI * 47;
 
-  return (
-    <section
-      id="hero"
-      className="section-pad min-h-[70vh] lg:min-h-[65vh] flex flex-col justify-center relative px-6 sm:px-8 py-16 lg:py-14"
-    >
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="show"
-        className="max-w-2xl"
-      >
-        {/* Eyebrow + profile photo */}
-        <motion.div variants={itemVariants} className="flex items-center gap-4 mb-8">
-          <div
-            className="relative flex-shrink-0"
-            style={{ width: 96, height: 96 }}
-            onMouseEnter={flashRing}
-            onTouchStart={flashRing}
-            tabIndex={0}
-            onFocus={flashRing}
-            role="img"
-            aria-label="Sugru Taimako, profile photo"
-          >
-            <img
-              src="/myprofile.jpg"
-              alt="Sugru Taimako"
-              width={96}
-              height={96}
-              className="rounded-full object-cover w-full h-full"
-              style={{ display: 'block' }}
-            />
-            <svg
-              className="absolute top-0 left-0 pointer-events-none"
-              width="96"
-              height="96"
-              viewBox="0 0 96 96"
-            >
-              <circle
-                cx="48"
-                cy="48"
-                r="47"
-                fill="none"
-                stroke={ringActive ? 'var(--accent)' : 'var(--hairline-strong)'}
-                strokeWidth="1"
-                className="profile-photo-ring"
-                strokeDasharray={reduceMotion ? undefined : ringCircumference}
-                strokeDashoffset={reduceMotion ? 0 : ringCircumference}
-                style={
-                  reduceMotion
-                    ? {}
-                    : {
-                        animation: 'draw-ring 0.7s ease-out 0.3s forwards',
-                      }
-                }
-              />
-            </svg>
-          </div>
-          <p
-            className="font-mono text-xs tracking-wider"
-            style={{ color: 'var(--ink-dim)' }}
-          >
-            SOFTWARE ENGINEER · ELECTRICAL ENGINEERING, KNUST
-            <br />
-            ACCRA/TAMALE, GHANA
-          </p>
-        </motion.div>
+  const itemVariants = reduceMotion
+    ? { hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 0.4 } } }
+    : {
+        hidden: { opacity: 0, y: 16, filter: "blur(6px)" },
+        show: {
+          opacity: 1, y: 0, filter: "blur(0px)",
+          transition: { type: "spring", stiffness: 150, damping: 19, mass: 1.2 },
+        },
+      };
 
-        {/* Display line */}
-        <motion.h1
-          variants={itemVariants}
-          className="font-display text-4xl sm:text-5xl lg:text-6xl leading-[1.1] mb-6"
-          style={{ color: 'var(--ink)', fontWeight: 500 }}
-        >
-          I built the financial infrastructure I could not find, then I make it feel obvious.
-        </motion.h1>
+  return (
+    <section id="hero" className="pt-8 pb-16">
+      <FadeIn.Container>
+        {/* Profile + role */}
+        <FadeIn.Item>
+          <div className="flex items-center gap-4 mb-10">
+            <div
+              className="relative flex-shrink-0"
+              style={{ width: 80, height: 80 }}
+              onMouseEnter={flashRing}
+              onTouchStart={flashRing}
+              tabIndex={0}
+              onFocus={flashRing}
+              role="img"
+              aria-label="Sugru Taimako, profile photo"
+            >
+              <img
+                src="/myprofile.jpg"
+                alt="Sugru Taimako"
+                width={80}
+                height={80}
+                className="rounded-full object-cover w-full h-full"
+                style={{ display: "block" }}
+              />
+              <svg className="absolute top-0 left-0 pointer-events-none" width="80" height="80" viewBox="0 0 80 80">
+                <circle
+                  cx="40" cy="40" r="39"
+                  fill="none"
+                  stroke={ringActive ? "var(--accent)" : "var(--hairline-strong)"}
+                  strokeWidth="1"
+                  className="profile-photo-ring"
+                  strokeDasharray={reduceMotion ? undefined : ringCircumference}
+                  strokeDashoffset={reduceMotion ? 0 : ringCircumference}
+                  style={reduceMotion ? {} : { animation: "draw-ring 0.7s ease-out 0.3s forwards" }}
+                />
+              </svg>
+            </div>
+            <p className="font-mono text-xs tracking-wide text-muted leading-relaxed">
+              Software Engineer · Electrical Engineering, KNUST
+              <br />
+              Accra/Tamale, Ghana
+            </p>
+          </div>
+        </FadeIn.Item>
+
+        {/* Headline */}
+        <FadeIn.Item>
+          <h1 className="font-display text-3xl sm:text-4xl leading-[1.15] mb-5 text-foreground">
+            I built the financial infrastructure I could not find, then I make it feel obvious.
+          </h1>
+        </FadeIn.Item>
 
         {/* Subline */}
-        <motion.p
-          variants={itemVariants}
-          className="text-base sm:text-lg mb-8 max-w-xl"
-          style={{ color: 'var(--ink-dim)', lineHeight: 1.65 }}
-        >
-          Currently building Azaman, a fintech super-app for Ghana, and Wayfinder, a vision-AI QA tool for mobile apps.
-        </motion.p>
+        <FadeIn.Item>
+          <p className="text-base text-muted mb-6 leading-relaxed">
+            Currently building Azaman, a fintech super-app for Ghana, and Wayfinder, a vision-AI QA tool for mobile apps.
+          </p>
+        </FadeIn.Item>
 
-        {/* Live status line */}
-        <motion.div
-          variants={itemVariants}
-          className="flex items-center gap-3 mb-10 font-mono text-xs flex-wrap"
-          style={{ color: 'var(--ink-dim)' }}
-        >
-          <span style={{ color: 'var(--hairline)' }}>·</span>
-          <span>AZAMAN: v0.3.0 · ANDROID (KOTLIN/COMPOSE)</span>
-          <span style={{ color: 'var(--hairline)' }}>·</span>
-          <span>LAST DEPLOY: AUG 2026</span>
-        </motion.div>
+        {/* Status line */}
+        <FadeIn.Item>
+          <div className="flex items-center gap-2 mb-8 font-mono text-xs flex-wrap text-muted">
+            <span className="w-1.5 h-1.5 rounded-full bg-accent" style={{ animation: "pulse-dot 2s ease-in-out infinite" }} />
+            <span>Azaman: v0.3.0 · Android (Kotlin/Compose)</span>
+            <span className="text-muted/40">·</span>
+            <span>Last deploy: Aug 2026</span>
+          </div>
+        </FadeIn.Item>
 
         {/* CTAs */}
-        <motion.div variants={itemVariants} className="flex items-center gap-6 flex-wrap">
-          <span className="offset-wrap offset-btn-wrap rounded-md">
+        <FadeIn.Item>
+          <div className="flex items-center gap-4 flex-wrap">
+            <span className="offset-wrap offset-btn-wrap rounded">
+              <button
+                onClick={scrollToAzaman}
+                className="offset-btn px-5 py-2.5 rounded font-mono text-sm tracking-wide"
+                style={{ backgroundColor: "var(--accent)", color: "var(--bg)" }}
+              >
+                View Azaman
+              </button>
+            </span>
             <button
-              onClick={scrollToAzaman}
-              className="offset-btn px-6 py-3 rounded-md font-mono text-sm tracking-wide"
-              style={{
-                backgroundColor: 'var(--accent)',
-                color: 'var(--bg)',
-              }}
+              onClick={openVideo}
+              className="px-5 py-2.5 rounded font-mono text-sm tracking-wide border transition-colors duration-200"
+              style={{ borderColor: "var(--border)", color: "var(--muted)" }}
             >
-              View Azaman
+              Watch the pitch
             </button>
-          </span>
-          <button
-            onClick={openVideo}
-            className="px-6 py-3 rounded-md font-mono text-sm tracking-wide border transition-colors duration-200"
-            style={{
-              borderColor: 'var(--hairline)',
-              color: 'var(--ink-dim)',
-            }}
-          >
-            Watch the pitch
-          </button>
-        </motion.div>
-      </motion.div>
+          </div>
+        </FadeIn.Item>
+      </FadeIn.Container>
 
       <style jsx>{`
         @keyframes draw-ring {
-          to {
-            stroke-dashoffset: 0;
-          }
+          to { stroke-dashoffset: 0; }
+        }
+        @keyframes pulse-dot {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 1; }
         }
       `}</style>
     </section>

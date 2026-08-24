@@ -1,4 +1,7 @@
 import { Fraunces, Inter, IBM_Plex_Mono } from 'next/font/google';
+import { ThemeProvider } from 'next-themes';
+import { ViewTransitions } from 'next-view-transitions';
+import '@/styles/main.css';
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -12,7 +15,7 @@ const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
-  weight: ['400', '500', '600'],
+  weight: ['400', '500', '600', '700'],
 });
 
 const plexMono = IBM_Plex_Mono({
@@ -22,46 +25,41 @@ const plexMono = IBM_Plex_Mono({
   weight: ['400', '500'],
 });
 
-import './globals.css';
-
 export const metadata = {
-  title: 'Sugru Taimako - Software & Electrical Engineer',
+  title: 'Sugru Taimako — Software & Electrical Engineer',
   description: 'Building the financial infrastructure I could not find, then making it feel obvious. Currently building Azaman and Wayfinder.',
   openGraph: {
-    title: 'Sugru Taimako - Software & Electrical Engineer',
+    title: 'Sugru Taimako — Software & Electrical Engineer',
     description: 'Fintech infrastructure builder. Azaman, Wayfinder, and the signal between.',
     type: 'website',
   },
 };
 
 export const viewport = {
-  themeColor: '#000000',
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#111111' },
+    { media: '(prefers-color-scheme: light)', color: '#fcfcfc' },
+  ],
   width: 'device-width',
   initialScale: 1,
 };
 
-// Runs before first paint to avoid a flash of the wrong theme.
-// Reads localStorage, falls back to prefers-color-scheme, sets
-// data-theme on <html> and syncs the theme-color meta tag.
-const NO_FLASH_SCRIPT = `
-(function () {
-  try {
-    var stored = localStorage.getItem('azm-portfolio-theme');
-    var theme = stored || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-    document.documentElement.setAttribute('data-theme', theme);
-    var meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute('content', theme === 'light' ? '#FFFFFF' : '#000000');
-  } catch (e) {}
-})();
-`;
-
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${inter.variable} ${plexMono.variable}`}>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: NO_FLASH_SCRIPT }} />
-      </head>
-      <body>{children}</body>
+    <html
+      lang="en"
+      className={`${fraunces.variable} ${inter.variable} ${plexMono.variable}`}
+      suppressHydrationWarning
+    >
+      <body>
+        <ViewTransitions>
+          <ThemeProvider enableSystem attribute="class" storageKey="sugru-theme" defaultTheme="dark">
+            <main className="mx-auto max-w-screen-sm overflow-x-hidden px-6 py-20 md:overflow-x-visible">
+              {children}
+            </main>
+          </ThemeProvider>
+        </ViewTransitions>
+      </body>
     </html>
   );
 }

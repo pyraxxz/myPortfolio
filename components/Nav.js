@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import ThemeToggle from './ThemeToggle';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import ThemeToggle from "./ThemeToggle";
 
 const NAV_ITEMS = [
-  { id: 'origin', label: 'ORIGIN' },
-  { id: 'azaman', label: 'AZAMAN' },
-  { id: 'builds', label: 'BUILDS' },
-  { id: 'stack', label: 'STACK' },
-  { id: 'credentials', label: 'CREDENTIALS' },
+  { id: "origin", label: "Origin" },
+  { id: "azaman", label: "Azaman" },
+  { id: "builds", label: "Builds" },
+  { id: "stack", label: "Stack" },
+  { id: "credentials", label: "Credentials" },
 ];
 
 export default function Nav({ activeSection }) {
@@ -17,48 +17,47 @@ export default function Nav({ activeSection }) {
 
   useEffect(() => {
     const handleScroll = () => {
-      setVisible(window.scrollY > window.innerHeight * 0.6);
+      setVisible(window.scrollY > window.innerHeight * 0.5);
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollTo = (id) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
     <AnimatePresence>
       {visible && (
         <motion.nav
-          initial={{ y: -60, opacity: 0 }}
+          initial={{ y: -40, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -60, opacity: 0 }}
-          transition={{ duration: 0.3, ease: 'easeOut' }}
+          exit={{ y: -40, opacity: 0 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
           className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md"
-          style={{ backgroundColor: 'var(--bg)', opacity: 0.92, borderBottom: '1px solid var(--hairline)' }}
+          style={{
+            backgroundColor: "color-mix(in srgb, var(--bg) 88%, transparent)",
+            borderBottom: "1px solid var(--border)",
+          }}
         >
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
-            {/* Name */}
+          <div className="max-w-screen-sm mx-auto px-6 py-3 flex items-center justify-between gap-3">
             <button
-              onClick={() => scrollTo('hero')}
-              className="font-display text-sm tracking-tight whitespace-nowrap"
-              style={{ color: 'var(--ink)' }}
+              onClick={() => scrollTo("hero")}
+              className="font-display text-sm tracking-tight whitespace-nowrap text-foreground"
             >
-              SUGRU TAIMAKO
+              Sugru Taimako
             </button>
 
-            {/* Nav items - horizontal scroll on mobile */}
-            <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-3 sm:gap-5 overflow-x-auto no-scrollbar">
               {NAV_ITEMS.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollTo(item.id)}
-                  className="font-mono text-xs uppercase tracking-wider whitespace-nowrap transition-colors duration-200"
+                  className="font-mono text-xs tracking-wide whitespace-nowrap transition-colors duration-200"
                   style={{
-                    color: activeSection === item.id ? 'var(--accent)' : 'var(--ink-dim)',
+                    color: activeSection === item.id ? "var(--accent)" : "var(--muted)",
                   }}
                 >
                   {item.label}
@@ -66,18 +65,17 @@ export default function Nav({ activeSection }) {
               ))}
             </div>
 
-            <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <ThemeToggle />
-              {/* Contact pill */}
               <button
-                onClick={() => scrollTo('contact')}
-                className="font-mono text-xs uppercase tracking-wider px-3 py-1.5 rounded-full whitespace-nowrap transition-colors duration-200"
+                onClick={() => scrollTo("contact")}
+                className="font-mono text-xs tracking-wide px-3 py-1.5 rounded-full whitespace-nowrap transition-colors duration-200"
                 style={{
-                  backgroundColor: 'var(--accent)',
-                  color: 'var(--bg)',
+                  backgroundColor: "var(--accent)",
+                  color: "var(--bg)",
                 }}
               >
-                CONTACT
+                Contact
               </button>
             </div>
           </div>

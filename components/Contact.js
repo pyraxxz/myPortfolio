@@ -1,79 +1,47 @@
-'use client';
+"use client";
 
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion } from "framer-motion";
 
 const LINKS = [
-  { label: 'LINKEDIN (PERSONAL)', url: 'https://www.linkedin.com/in/sugru-taimako-35356b229' },
-  { label: 'LINKEDIN (AZAMAN DIGITAL)', url: 'https://www.linkedin.com/company/azaman/' },
-  { label: 'EMAIL', url: 'mailto:taimakoshamsudeen@gmail.com' },
-  { label: 'WHATSAPP COMMUNITY', url: 'https://azaman.me' },
+  { label: "GitHub", href: "https://github.com/pyraxxz" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/taimako-shamsudeen-sugru" },
+  { label: "Email", href: "mailto:taimakoshamsudeen@gmail.com" },
 ];
 
 export default function Contact() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section
-      id="contact"
-      className="section-pad min-h-screen flex flex-col justify-center items-start px-6 sm:px-8 py-24"
-    >
+    <section id="contact" className="py-16">
       <motion.div
-        initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16, filter: "blur(6px)" }}
+        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="max-w-xl w-full"
+        transition={{ type: "spring", stiffness: 150, damping: 19, mass: 1.2 }}
       >
-        <p className="font-mono text-xs tracking-wider mb-4" style={{ color: 'var(--accent)' }}>
-          NODE-07 · CONTACT
+        <p className="font-mono text-xs tracking-wider mb-3 text-accent">Node 07 · Contact</p>
+        <h2 className="font-display text-2xl sm:text-3xl mb-4 text-foreground">
+          Let's build something.
+        </h2>
+        <p className="text-base text-muted mb-8 leading-relaxed">
+          Open to collaborations on fintech infrastructure, Android engineering, or vision-AI tooling.
+          The fastest way to reach me is email.
         </p>
 
-        <h2 className="font-display text-3xl sm:text-4xl mb-8" style={{ color: 'var(--ink)', fontWeight: 500 }}>
-          Reach out...
-        </h2>
-
-        {/* Links */}
-        <div className="space-y-3 mb-16">
+        <div className="flex items-center gap-6 flex-wrap">
           {LINKS.map((link) => (
             <a
               key={link.label}
-              href={link.url}
-              target={link.url.startsWith('mailto:') ? '_self' : '_blank'}
+              href={link.href}
+              target="_blank"
               rel="noopener noreferrer"
-              className="block font-mono text-sm py-2 transition-colors duration-200"
-              style={{ color: 'var(--ink-dim)' }}
-              onMouseEnter={(e) => (e.target.style.color = 'var(--accent)')}
-              onMouseLeave={(e) => (e.target.style.color = 'var(--ink-dim)')}
+              className="font-mono text-sm text-foreground underline decoration-1 underline-offset-4 decoration-muted/30 hover:decoration-accent transition-colors"
             >
-              <span style={{ color: 'var(--accent)' }}>&#8594;</span> {link.label}
+              {link.label}
             </a>
           ))}
         </div>
-
-        {/* Mailto button */}
-        <span className="offset-wrap offset-btn-wrap rounded-md">
-          <a
-            href="mailto:sugrutaimako@gmail.com"
-            className="offset-btn inline-flex items-center gap-2 px-6 py-3 rounded-md font-mono text-sm tracking-wide"
-            style={{
-              backgroundColor: 'var(--accent)',
-              color: 'var(--bg)',
-            }}
-          >
-            Send an email
-          </a>
-        </span>
       </motion.div>
-
-      {/* Footer */}
-      <div
-        className="w-full mt-20 pt-6 border-t"
-        style={{ borderColor: 'var(--hairline)' }}
-      >
-        <p className="font-mono text-xs" style={{ color: 'var(--ink-dim)' }}>
-          AZAMAN.ME · BUILT IN GHANA · 2026
-        </p>
-      </div>
     </section>
   );
 }

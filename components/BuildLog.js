@@ -1,69 +1,84 @@
-'use client';
+"use client";
 
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion } from "framer-motion";
+
+const ENTRIES = [
+  {
+    version: "v0.1.0",
+    date: "Jan 2025",
+    title: "Flutter MVP",
+    desc: "First working build. P2P transfer + Susu. Kotlin backend on Firebase.",
+    status: "shipped",
+  },
+  {
+    version: "v0.2.0",
+    date: "Mar 2025",
+    title: "Compose rewrite",
+    desc: "Full rewrite to Jetpack Compose. Escrow logic added. Marketplace scaffolded.",
+    status: "shipped",
+  },
+  {
+    version: "v0.3.0",
+    date: "Aug 2026",
+    title: "Social layer",
+    desc: "In-app chat tied to transactions. Credit scoring model prototyped.",
+    status: "current",
+  },
+  {
+    version: "v0.4.0",
+    date: "Next",
+    title: "Wayfinder integration",
+    desc: "Vision-AI QA pipeline to catch UI regressions before deploy.",
+    status: "next",
+  },
+];
 
 export default function BuildLog() {
   const reduceMotion = useReducedMotion();
 
-  const cards = [
-    {
-      label: 'SIDE BUILD',
-      title: 'Wayfinder',
-      desc: 'AI-powered QA tool that walks a mobile app screens, screenshots them, and uses vision AI to flag broken layouts. No test scripts, no golden baselines needed.',
-      tag: '[ IN PROGRESS ]',
-      showTag: true,
-    },
-    {
-      label: 'INTERNSHIP',
-      title: 'Solar-powered lighting system',
-      desc: 'Hardware-adjacent engineering work at Goliath Robotics. Built and tested solar-powered lighting systems, applying electrical theory to real deployment constraints.',
-      tag: null,
-      showTag: false,
-    },
-  ];
-
   return (
-    <section id="builds" className="section-pad flex flex-col justify-center px-6 sm:px-8 py-16 lg:py-18">
+    <section id="builds" className="py-16">
       <motion.div
-        initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
+        initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16, filter: "blur(6px)" }}
+        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ type: "spring", stiffness: 150, damping: 19, mass: 1.2 }}
       >
-        <p className="font-mono text-xs tracking-wider mb-4" style={{ color: 'var(--accent)' }}>
-          NODE-04 · BUILD LOG
-        </p>
-        <h2 className="font-display text-3xl sm:text-4xl mb-10" style={{ color: 'var(--ink)', fontWeight: 500 }}>
-          Side work and earlier builds.
+        <p className="font-mono text-xs tracking-wider mb-3 text-accent">Node 04 · Build Log</p>
+        <h2 className="font-display text-2xl sm:text-3xl mb-8 text-foreground">
+          Shipping in sequence.
         </h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 max-w-4xl">
-          {cards.map((card, i) => (
+        <div className="space-y-0">
+          {ENTRIES.map((entry, i) => (
             <motion.div
-              key={card.title}
-              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              key={entry.version}
+              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, x: -8 }}
+              whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: i * 0.1, ease: 'easeOut' }}
-              className={`card-trace-border pl-5 pr-5 py-6 ${i === 0 ? 'lg:col-span-3' : 'lg:col-span-2'}`}
+              transition={{ duration: 0.3, delay: i * 0.08 }}
+              className="flex gap-4 py-4 border-t border-border"
             >
-              <span className="font-mono text-xs tracking-wider block mb-3" style={{ color: 'var(--accent)' }}>
-                {card.label}
-              </span>
-              <h3 className="font-display text-xl sm:text-2xl mb-3" style={{ color: 'var(--ink)' }}>
-                {card.title}
-              </h3>
-              <p className="text-sm mb-4" style={{ color: 'var(--ink-dim)', lineHeight: 1.65 }}>
-                {card.desc}
-              </p>
-              {card.showTag && (
-                <span
-                  className="inline-block font-mono text-xs px-2 py-1 rounded"
-                  style={{ color: 'var(--accent)', backgroundColor: 'var(--bg-panel)', border: '1px solid var(--hairline)' }}
-                >
-                  {card.tag}
-                </span>
-              )}
+              <div className="flex-shrink-0 w-20">
+                <p className="font-mono text-xs text-foreground">{entry.version}</p>
+                <p className="font-mono text-xs text-muted/60 mt-0.5">{entry.date}</p>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <p className="text-sm font-medium text-foreground">{entry.title}</p>
+                  {entry.status === "current" && (
+                    <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-accent-soft text-accent-fg">
+                      CURRENT
+                    </span>
+                  )}
+                  {entry.status === "next" && (
+                    <span className="font-mono text-[10px] px-1.5 py-0.5 rounded border border-border text-muted">
+                      NEXT
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-muted leading-relaxed">{entry.desc}</p>
+              </div>
             </motion.div>
           ))}
         </div>

@@ -1,117 +1,99 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { useState } from "react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 
 const ROWS = [
   {
-    label: 'LANGUAGES',
+    label: "Languages",
     items: [
-      { name: 'C++', desc: '4+ YRS, SINCE BiTT' },
-      { name: 'Python', desc: '5+ YRS, SINCE BiTT' },
-      { name: 'Java', desc: '3+ YRS, OOP FOUNDATIONS' },
-      { name: 'Kotlin', desc: 'PRIMARY, AZAMAN ANDROID' },
-      { name: 'Swift', desc: 'LEARNING, iOS NEXT' },
+      { name: "C++", desc: "4+ yrs, since BiTT" },
+      { name: "Python", desc: "5+ yrs, since BiTT" },
+      { name: "Java", desc: "3+ yrs, OOP foundations" },
+      { name: "Kotlin", desc: "Primary, Azaman Android" },
+      { name: "Swift", desc: "Learning, iOS next" },
     ],
   },
   {
-    label: 'PLATFORMS',
+    label: "Platforms",
     items: [
-      { name: 'Android / Jetpack Compose', desc: 'PRIMARY, AZAMAN' },
-      { name: 'Flutter', desc: 'PRODUCTION, AZAMAN v1' },
+      { name: "Android / Jetpack Compose", desc: "Primary, Azaman" },
+      { name: "Flutter", desc: "Production, Azaman v1" },
     ],
   },
   {
-    label: 'DOMAIN',
+    label: "Domain",
     items: [
-      { name: 'Fintech systems', desc: 'P2P, ESCROW, SUSU' },
-      { name: 'Payments logic', desc: 'ESCROW + CREDIT SCORING' },
-      { name: 'Vision AI tooling', desc: 'WAYFINDER, QA AUTOMATION' },
+      { name: "Fintech systems", desc: "P2P, escrow, Susu" },
+      { name: "Payments logic", desc: "Escrow + credit scoring" },
+      { name: "Vision AI tooling", desc: "Wayfinder, QA automation" },
     ],
   },
 ];
-
-function ChipRow({ row, rowIdx, reduceMotion, openKey, setOpenKey }) {
-  return (
-    <motion.div
-      initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.4, delay: rowIdx * 0.12, ease: 'easeOut' }}
-    >
-      <p className="font-mono text-xs tracking-wider mb-3" style={{ color: 'var(--ink-dim)' }}>
-        {row.label}
-      </p>
-      <div className="relative">
-        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 snap-strip">
-          {row.items.map((item) => {
-            const key = `${row.label}-${item.name}`;
-            const isOpen = openKey === key;
-            return (
-              <button
-                key={key}
-                onClick={() => setOpenKey(isOpen ? null : key)}
-                onMouseEnter={() => setOpenKey(key)}
-                onMouseLeave={() => setOpenKey((k) => (k === key ? null : k))}
-                className={`skill-chip snap-item flex-shrink-0 px-4 py-2 text-left ${isOpen ? 'open' : ''}`}
-              >
-                <span className="text-sm font-medium block" style={{ color: 'var(--ink)' }}>
-                  {item.name}
-                </span>
-                <motion.span
-                  initial={false}
-                  animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="overflow-hidden block"
-                >
-                  <span className="font-mono text-xs whitespace-nowrap block mt-1" style={{ color: 'var(--ink-dim)' }}>
-                    {item.desc}
-                  </span>
-                </motion.span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </motion.div>
-  );
-}
 
 export default function Stack() {
   const reduceMotion = useReducedMotion();
   const [openKey, setOpenKey] = useState(null);
 
   return (
-    <section id="stack" className="section-pad flex flex-col justify-center px-6 sm:px-8 py-16 lg:py-18">
+    <section id="stack" className="py-16">
       <motion.div
-        initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="max-w-2xl w-full"
+        initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16, filter: "blur(6px)" }}
+        whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ type: "spring", stiffness: 150, damping: 19, mass: 1.2 }}
       >
-        <p className="font-mono text-xs tracking-wider mb-4" style={{ color: 'var(--accent)' }}>
-          NODE-05 · STACK
-        </p>
-        <h2 className="font-display text-3xl sm:text-4xl mb-10" style={{ color: 'var(--ink)', fontWeight: 500 }}>
+        <p className="font-mono text-xs tracking-wider mb-3 text-accent">Node 05 · Stack</p>
+        <h2 className="font-display text-2xl sm:text-3xl mb-8 text-foreground">
           Components on the tray.
         </h2>
 
-        <div className="space-y-7">
+        <div className="space-y-6">
           {ROWS.map((row, rowIdx) => (
-            <ChipRow
+            <motion.div
               key={row.label}
-              row={row}
-              rowIdx={rowIdx}
-              reduceMotion={reduceMotion}
-              openKey={openKey}
-              setOpenKey={setOpenKey}
-            />
+              initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: rowIdx * 0.1 }}
+            >
+              <p className="font-mono text-xs tracking-wide mb-3 text-muted">{row.label}</p>
+              <div className="flex gap-2 overflow-x-auto no-scrollbar snap-strip pb-2">
+                {row.items.map((item) => {
+                  const key = `${row.label}-${item.name}`;
+                  const isOpen = openKey === key;
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => setOpenKey(isOpen ? null : key)}
+                      onMouseEnter={() => setOpenKey(key)}
+                      onMouseLeave={() => setOpenKey((k) => (k === key ? null : k))}
+                      className={`skill-chip snap-item flex-shrink-0 px-4 py-2 text-left ${isOpen ? "open" : ""}`}
+                    >
+                      <span className="text-sm font-medium block text-foreground">{item.name}</span>
+                      <AnimatePresence initial={false}>
+                        {isOpen && (
+                          <motion.span
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="overflow-hidden block"
+                          >
+                            <span className="font-mono text-xs whitespace-nowrap block mt-1 text-muted">
+                              {item.desc}
+                            </span>
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
+                    </button>
+                  );
+                })}
+              </div>
+            </motion.div>
           ))}
         </div>
-        <p className="font-mono text-xs mt-6" style={{ color: 'var(--ink-dim)' }}>
-          TAP OR HOVER A CHIP FOR CONTEXT
-        </p>
+        <p className="font-mono text-xs mt-4 text-muted/60">Tap or hover a chip for context</p>
       </motion.div>
     </section>
   );

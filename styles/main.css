@@ -1,0 +1,183 @@
+@import url("@radix-ui/colors/gray.css");
+@import url("@radix-ui/colors/gray-alpha.css");
+@import url("@radix-ui/colors/gray-dark.css");
+@import url("@radix-ui/colors/gray-dark-alpha.css");
+@import url("@radix-ui/colors/orange.css");
+@import url("@radix-ui/colors/orange-alpha.css");
+@import url("@radix-ui/colors/orange-dark.css");
+@import url("@radix-ui/colors/orange-dark-alpha.css");
+@import url("@radix-ui/colors/brown.css");
+@import url("@radix-ui/colors/brown-dark.css");
+@import url("@radix-ui/colors/black-alpha.css");
+@import url("@radix-ui/colors/white-alpha.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: var(--gray-1);
+    --fg: var(--gray-12);
+    --muted: var(--gray-10);
+    --panel: var(--gray-2);
+    --border: var(--gray-5);
+    --hover: var(--gray-3);
+    --accent: var(--orange-9);
+    --accent-fg: var(--orange-12);
+    --accent-soft: var(--orange-3);
+    --accent-border: var(--orange-6);
+    --scrollbar-thumb: var(--gray-5);
+    --scrollbar-track: transparent;
+    --selection-background: var(--orange-3);
+    --selection-foreground: var(--orange-11);
+    --radius-small: 6px;
+    --radius-base: 8px;
+    --radius-large: 14px;
+    --offset-fill: var(--gray-a4);
+    --hairline: var(--gray-a4);
+    --hairline-strong: var(--gray-a8);
+  }
+
+  .dark {
+    --bg: var(--gray-1);
+    --fg: var(--gray-12);
+    --muted: var(--gray-9);
+    --panel: var(--gray-2);
+    --border: var(--gray-6);
+    --hover: var(--gray-3);
+    --accent: var(--orange-9);
+    --accent-fg: var(--orange-11);
+    --accent-soft: var(--orange-4);
+    --accent-border: var(--orange-8);
+    --scrollbar-thumb: var(--gray-6);
+    --scrollbar-track: transparent;
+    --selection-background: var(--orange-4);
+    --selection-foreground: var(--orange-11);
+    --offset-fill: var(--gray-a6);
+    --hairline: var(--gray-a4);
+    --hairline-strong: var(--gray-a8);
+  }
+
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-variant-ligatures: common-ligatures;
+    text-wrap: pretty;
+    text-rendering: optimizelegibility;
+  }
+
+  *::selection {
+    color: var(--selection-foreground);
+    background-color: var(--selection-background);
+  }
+
+  html {
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+  }
+
+  html {
+    color: var(--fg);
+    background-color: var(--bg);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  h2, h3 {
+    color: var(--muted);
+  }
+
+  a {
+    transition: opacity 0.2s ease;
+  }
+  a:hover {
+    opacity: 0.6;
+  }
+
+  body {
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+}
+
+@layer components {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .offset-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .offset-wrap.offset-block { display: block; }
+  .offset-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--offset-fill);
+    border-radius: inherit;
+    z-index: 0;
+    transition: transform 0.15s ease;
+  }
+  .offset-btn {
+    position: relative;
+    transform: translate(0, 0);
+    transition: transform 80ms ease-out;
+    z-index: 1;
+  }
+  .offset-btn-wrap::before { transform: translate(4px, 4px); }
+  .offset-btn:active, .offset-btn.pressed { transform: translate(4px, 4px); }
+  .offset-card-wrap::before { transform: translate(2px, 2px); transition: transform 0.25s ease; }
+  .offset-card-wrap:hover::before, .offset-card-wrap:focus-within::before { transform: translate(3px, 3px); }
+
+  .snap-strip {
+    scroll-snap-type: x proximity;
+    scroll-padding-left: 1rem;
+  }
+  .snap-item { scroll-snap-align: start; }
+
+  .scroll-hint-fade {
+    position: absolute;
+    top: 0; bottom: 0; right: 0;
+    width: 48px;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, var(--bg));
+  }
+
+  .skill-chip {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background-color: var(--panel);
+    transition: border-color 0.25s ease, background-color 0.25s ease;
+    cursor: pointer;
+  }
+  .skill-chip:hover, .skill-chip.open {
+    border-color: var(--hairline-strong);
+  }
+
+  .lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.88);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .profile-photo-ring { transition: stroke 0.4s ease; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
