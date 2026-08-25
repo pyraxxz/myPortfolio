@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
 
 export default function ScrollStrand({ activeSection, sectionIds, sectionLabels }) {
@@ -10,7 +10,6 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
   const [hoveredNode, setHoveredNode] = useState(null);
   const rafRef = useRef(null);
 
-  // Dimensions
   const [vh, setVh] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -24,7 +23,6 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
     return () => window.removeEventListener("resize", updateDims);
   }, []);
 
-  // Scroll progress listener (throttled via rAF)
   useEffect(() => {
     const handleScroll = () => {
       if (rafRef.current) return;
@@ -52,15 +50,14 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
   const helixTop = vh > 0 ? Math.round((vh - helixHeight) / 2) : 0;
 
   // Helix parameters
-  const amplitude = isMobile ? 5 : 8;
-  const baseX = isMobile ? 14 : 20;
+  const amplitude = isMobile ? 6 : 9;
+  const baseX = isMobile ? 16 : 22;
   const pitch = isMobile ? 80 : 110;
   const totalTwists = Math.max(3, helixHeight / pitch);
-  // Phase rotates in place with scroll — the helix spins but doesn't travel
   const phase = reduceMotion ? 0 : scrollProgress * Math.PI * totalTwists * 2;
-  const step = 4;
+  const step = 3;
 
-  // Generate sine-wave path — fixed length, only phase changes (spins in place)
+  // Generate sine-wave path
   const generatePath = (phaseOffset) => {
     if (helixHeight <= 0) return "";
     let d = "";
@@ -71,10 +68,29 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
     return d;
   };
 
-  const strand1Path = generatePath(0);
-  const strand2Path = generatePath(Math.PI);
+  // Generate a path with varying width for depth illusion
+  // The "front" strand is thicker when sine > 0 (toward viewer), thinner when < 0 (away)
+  const generateDepthPath = (phaseOffset) => {
+    if (helixHeight <= 0) return "";
+    let d = "";
+    for (let y = 0; y <= helixHeight; y += step) {
+      const wave = Math.sin((y / pitch) * Math.PI * 2 + phase + phaseOffset);
+      const x = baseX + amplitude * wave;
+      d += y === 0 ? `M ${x.toFixed(2)} ${y.toFixed(2)}` : ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
+    }
+    return d;
+  };
 
-  // Rungs are evenly spaced across the helix — 7 sections, fixed positions
+  const strand1Path = generateDepthPath(0);
+  const strand2Path = generateDepthPath(Math.PI);
+
+  // Depth value at a specific y (0 = far, 1 = near)
+  const depthAt = (y, phaseOffset) => {
+    const wave = Math.sin((y / pitch) * Math.PI * 2 + phase + phaseOffset);
+    return (wave + 1) / 2; // 0 to 1
+  };
+
+  // Rungs at fixed evenly-spaced positions
   const rungCount = sectionIds.length;
   const rungSpacing = rungCount > 1 ? helixHeight / (rungCount - 1) : 0;
   const rungs = sectionIds.map((id, i) => ({
@@ -83,17 +99,13 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
     label: sectionLabels[id] || id,
   }));
 
-  // The dot position: map scroll progress to y on the helix
-  // 0 = top of helix, 1 = bottom
   const dotY = scrollProgress * helixHeight;
 
-  // Find which rung the dot is closest to (for active highlight)
   const activeRungIndex = Math.min(
     rungCount - 1,
     Math.max(0, Math.round(scrollProgress * (rungCount - 1)))
   );
 
-  // Get strand x position at a specific y within the helix
   const strandXAt = (y, phaseOffset) => {
     return baseX + amplitude * Math.sin((y / pitch) * Math.PI * 2 + phase + phaseOffset);
   };
@@ -104,8 +116,13 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
 
   if (!vh || helixHeight <= 0) return null;
 
-  const svgWidth = isMobile ? 36 : 48;
+  const svgWidth = isMobile ? 40 : 52;
   const svgHeight = helixHeight;
+
+  // Unique gradient IDs
+  const gradId1 = "strand-grad-1";
+  const gradId2 = "strand-grad-2";
+  const glowId = "strand-glow";
 
   return (
     <div
@@ -124,24 +141,57 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
         fill="none"
         className="pointer-events-none"
       >
-        {/* Strand 1 — fixed in place, spins via phase */}
-        <path d={strand1Path} stroke="var(--hairline)" strokeWidth="1" fill="none" />
-        {/* Strand 2 */}
-        <path d={strand2Path} stroke="var(--hairline)" strokeWidth="1" fill="none" />
+        <defs>
+          {/* Gradient for strand 1 — blue with depth variation */}
+          <linearGradient id={gradId1} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.6" />
+            <stop offset="50%" stopColor="var(--accent)" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.6" />
+          </linearGradient>
 
-        {/* Rungs at fixed positions */}
+          {/* Gradient for strand 2 — slightly lighter blue */}
+          <linearGradient id={gradId2} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.35" />
+            <stop offset="50%" stopColor="var(--accent)" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.35" />
+          </linearGradient>
+
+          {/* Soft glow filter for the dot */}
+          <filter id={glowId} x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Strand 2 (back strand) — drawn first, lighter, thinner */}
+        <path
+          d={strand2Path}
+          stroke={`url(#${gradId2})`}
+          strokeWidth="1.2"
+          fill="none"
+          opacity="0.7"
+        />
+
+        {/* Rungs — drawn between the two strands */}
         {rungs.map((rung, i) => {
           const x1 = strandXAt(rung.y, 0);
           const x2 = strandXAt(rung.y, Math.PI);
-          const isActive = i === activeRungIndex && activeSection === rung.id;
           const isNearActive = i === activeRungIndex;
           const isHovered = hoveredNode === rung.id;
           const midX = (x1 + x2) / 2;
-          const strokeColor = isNearActive ? "var(--accent)" : "var(--hairline)";
+          const depth1 = depthAt(rung.y, 0);
+          const depth2 = depthAt(rung.y, Math.PI);
+
+          // Color rungs with blue tint, stronger near active
+          const rungOpacity = isNearActive ? 0.8 : 0.25;
+          const rungColor = isNearActive ? "var(--accent)" : "var(--accent)";
 
           return (
             <g key={rung.id}>
-              {/* Invisible hit area */}
+              {/* Hit area */}
               <rect
                 x={0}
                 y={rung.y - 12}
@@ -154,16 +204,36 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
                 onMouseLeave={() => setHoveredNode(null)}
               />
 
-              {/* Rung line */}
+              {/* Rung line — blue tinted */}
               <line
                 x1={x1}
                 y1={rung.y}
                 x2={x2}
                 y2={rung.y}
-                stroke={strokeColor}
-                strokeWidth={isNearActive ? 1.5 : 1}
+                stroke={rungColor}
+                strokeWidth={isNearActive ? 2 : 1}
+                strokeLinecap="round"
                 className="pointer-events-none"
-                style={{ transition: "stroke 0.3s ease, stroke-width 0.3s ease" }}
+                opacity={rungOpacity}
+                style={{ transition: "stroke-width 0.3s ease, opacity 0.3s ease" }}
+              />
+
+              {/* Small node dots at strand intersections */}
+              <circle
+                cx={x1}
+                cy={rung.y}
+                r={depth1 > 0.5 ? 2.2 : 1.2}
+                fill="var(--accent)"
+                opacity={depth1 > 0.5 ? 0.7 : 0.25}
+                className="pointer-events-none"
+              />
+              <circle
+                cx={x2}
+                cy={rung.y}
+                r={depth2 > 0.5 ? 2.2 : 1.2}
+                fill="var(--accent)"
+                opacity={depth2 > 0.5 ? 0.7 : 0.25}
+                className="pointer-events-none"
               />
 
               {/* Hover dot for non-active */}
@@ -181,33 +251,49 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
                   stroke={isNearActive ? "var(--accent)" : "var(--muted)"}
                   strokeWidth="1"
                   className="pointer-events-none"
-                  opacity={isNearActive ? 1 : 0.5}
+                  opacity={isNearActive ? 0.8 : 0.4}
                 />
               )}
             </g>
           );
         })}
 
-        {/* The moving dot — this is the only thing that moves up and down */}
+        {/* Strand 1 (front strand) — drawn after rungs, thicker, more opaque */}
+        <path
+          d={strand1Path}
+          stroke={`url(#${gradId1})`}
+          strokeWidth="2"
+          fill="none"
+          opacity="0.9"
+        />
+
+        {/* The moving dot — with glow */}
+        <g filter={`url(#${glowId})`}>
+          <circle
+            cx={baseX}
+            cy={dotY}
+            r={4}
+            fill="var(--accent)"
+            className="pointer-events-none"
+          />
+        </g>
+        {/* Inner solid dot */}
         <circle
           cx={baseX}
           cy={dotY}
-          r={3.5}
+          r={2.5}
           fill="var(--accent)"
           className="pointer-events-none"
-          style={{
-            transition: reduceMotion ? "cy 0.3s ease" : "none",
-          }}
         />
-        {/* Glow ring around the dot */}
+        {/* Outer ring */}
         <circle
           cx={baseX}
           cy={dotY}
-          r={6}
+          r={7}
           fill="none"
           stroke="var(--accent)"
-          strokeWidth="0.5"
-          opacity="0.3"
+          strokeWidth="0.8"
+          opacity="0.25"
           className="pointer-events-none"
         />
       </svg>
@@ -216,7 +302,7 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
       <div
         className="absolute pointer-events-none"
         style={{
-          right: isMobile ? 26 : 34,
+          right: isMobile ? 28 : 38,
           top: dotY - 9,
           transition: reduceMotion ? "top 0.3s ease" : "top 0.05s linear",
         }}
@@ -244,7 +330,7 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
             key={`hover-label-${rung.id}`}
             className="absolute pointer-events-none"
             style={{
-              right: isMobile ? 26 : 34,
+              right: isMobile ? 28 : 38,
               top: rung.y - 9,
               opacity: 0.5,
             }}
