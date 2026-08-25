@@ -103,7 +103,7 @@ export default function Credentials() {
           ))}
         </div>
 
-        {/* Video link */}
+        {/* Video link — YouTube thumbnail preview */}
         <div className="max-w-md">
           <p className="font-mono text-xs mb-3 text-muted">Submission video:</p>
           <a
@@ -117,14 +117,31 @@ export default function Credentials() {
               className="relative rounded-large overflow-hidden border border-border transition-colors duration-200 group-hover:border-muted/40"
               style={{ backgroundColor: "var(--panel)" }}
             >
-              <div className="aspect-video flex items-center justify-center">
+              {/* YouTube thumbnail */}
+              <div className="aspect-video relative">
+                <img
+                  src="https://img.youtube.com/vi/VMPXiLlgFO0/maxresdefault.jpg"
+                  alt="Azaman submission video"
+                  className="absolute inset-0 w-full h-full object-cover"
+                  loading="lazy"
+                />
+                {/* Dark overlay for contrast */}
                 <div
-                  className="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
-                  style={{ backgroundColor: "var(--btn-bg)" }}
+                  className="absolute inset-0"
+                  style={{ backgroundColor: "rgba(0,0,0,0.25)" }}
+                />
+                {/* Play button */}
+                <div
+                  className="absolute inset-0 flex items-center justify-center"
                 >
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                    <path d="M8 5v14l11-7z" fill="var(--btn-fg)" />
-                  </svg>
+                  <div
+                    className="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
+                    style={{ backgroundColor: "var(--btn-bg)" }}
+                  >
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                      <path d="M8 5v14l11-7z" fill="var(--btn-fg)" />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>

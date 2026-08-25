@@ -33,7 +33,7 @@ export default function Contact() {
         {/* Trimmed constraint paragraph with trace box */}
         <TraceBox className="mb-8 px-5 py-4 max-w-lg" bracketColor="var(--accent)">
           <p className="text-sm text-muted/70 leading-relaxed italic">
-            I've never had the luxury of ideal working conditions for this — only the work itself.
+            I've never had the luxury of ideal working conditions for this; only the work itself.
             Given real tools and a real program behind me, I don't intend to slow down.
           </p>
         </TraceBox>

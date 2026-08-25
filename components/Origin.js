@@ -50,14 +50,22 @@ const NODES = [
     label: "Goliath Robotics",
     dates: "Internship",
     short: "Solar-powered lighting system",
-    detail: "Hardware-adjacent engineering work during an internship. Built and tested a solar-powered lighting system, applying electrical theory to real deployment constraints.",
+    detail: (
+      <>
+        Hardware-adjacent engineering work during an internship. Built and tested a
+        highly efficient solar-powered lighting system for rural areas, applying
+        electrical theory to real deployment constraints under the Co-Founder
+        Barnabas Nomo{" "}
+        <LinkedinBtn href="https://www.linkedin.com/in/barnabas-nomo-386ab7109" />.
+      </>
+    ),
   },
   {
     tag: "Node 04",
     label: "Azaman & Wayfinder",
     dates: "2024",
     short: "Full-time product building",
-    detail: "Stepped into full-time product work: Azaman (Android fintech) and Wayfinder (vision-AI QA). From training current to production current.",
+    detail: "Stepped into full-time product work: Azaman (Super-fintech Application) and Wayfinder (vision-AI QA). From training current to production current.",
     active: true,
   },
 ];
