@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import TraceBox from "./TraceBox";
 
 const FEATURES = [
   {
@@ -48,15 +49,19 @@ export default function Azaman() {
         viewport={{ once: true, amount: 0.15 }}
         transition={{ type: "spring", stiffness: 150, damping: 19, mass: 1.2 }}
       >
-        <p className="font-mono text-xs tracking-wider mb-3 text-accent">Node 03 · Flagship Product</p>
+        <p className="font-mono text-xs tracking-wider mb-3 text-accent label-glow">Node 03 · Flagship Product</p>
         <h2 className="font-display text-2xl sm:text-3xl mb-4 text-foreground">Azaman</h2>
         <p className="text-base text-muted mb-6 leading-relaxed">
           A fintech super-app for Ghana. P2P transfer with escrow, digitized Susu, local marketplace, and social chat in one product.
         </p>
-        <p className="text-base text-muted/70 mb-10 leading-relaxed">
-          I designed and built Azaman entirely on my own, from the first Flutter prototype through the current
-          Kotlin/Compose rewrite — every line of the P2P transfer logic, the escrow system, and the Susu engine is mine.
-        </p>
+
+        {/* Solo-build sentence with animated trace box */}
+        <TraceBox className="mb-10 px-5 py-4" bracketColor="var(--accent)">
+          <p className="text-base text-muted/80 leading-relaxed">
+            I designed and built Azaman entirely on my own, from the first Flutter prototype through the current
+            Kotlin/Compose rewrite — every line of the P2P transfer logic, the escrow system, and the Susu engine is mine.
+          </p>
+        </TraceBox>
 
         {/* Feature grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
@@ -67,7 +72,7 @@ export default function Azaman() {
               whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               viewport={{ once: true }}
               transition={{ type: "spring", stiffness: 150, damping: 19, delay: i * 0.08 }}
-              className="rounded-large border border-border bg-panel p-5 transition-colors duration-200 hover:border-muted/40"
+              className="feature-card rounded-large border border-border bg-panel p-5"
             >
               <h3 className="text-sm font-medium text-foreground mb-2">{feature.title}</h3>
               <p className="text-xs text-muted leading-relaxed">{feature.desc}</p>
@@ -75,7 +80,7 @@ export default function Azaman() {
           ))}
         </div>
 
-        {/* Try the demo — animated callout with arrow */}
+        {/* Try the demo — animated arrow on the PAGE pointing to the button */}
         <motion.div
           initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12, filter: "blur(4px)" }}
           whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -83,28 +88,32 @@ export default function Azaman() {
           transition={{ type: "spring", stiffness: 140, damping: 20, delay: 0.15 }}
           className="mb-10"
         >
+          {/* Animated arrow on the page — floating above the button */}
+          <div className="flex items-center gap-3 mb-3">
+            <div className="page-arrow-float flex items-center gap-1">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M12 5v14M6 13l6 6 6-6"
+                  stroke="var(--accent)"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <p className="font-mono text-xs text-accent font-medium">
+              Try the live demo
+            </p>
+          </div>
+
           <div className="flex items-center gap-3 flex-wrap">
             <span className="offset-wrap offset-btn-wrap rounded">
               <button
                 onClick={openDemo}
-                className="offset-btn px-5 py-2.5 rounded font-mono text-sm tracking-wide flex items-center gap-2"
-                style={{ backgroundColor: "var(--accent)", color: "var(--bg)" }}
+                className="offset-btn px-5 py-2.5 rounded font-mono text-sm tracking-wide"
+                style={{ backgroundColor: "var(--btn-blue-bg)", color: "var(--btn-blue-fg)" }}
               >
                 Try Azaman
-                {/* Animated arrow */}
-                <svg
-                  width="16" height="16" viewBox="0 0 24 24" fill="none"
-                  className="demo-arrow"
-                  aria-hidden="true"
-                >
-                  <path
-                    d="M5 12h14M13 6l6 6-6 6"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
               </button>
             </span>
             <p className="font-mono text-xs text-muted/60 leading-relaxed max-w-xs">
@@ -153,7 +162,7 @@ export default function Azaman() {
             <button
               onClick={openSite}
               className="offset-btn px-5 py-2.5 rounded font-mono text-sm tracking-wide"
-              style={{ backgroundColor: "var(--accent)", color: "var(--bg)" }}
+              style={{ backgroundColor: "var(--btn-bg)", color: "var(--btn-fg)" }}
             >
               Visit azaman.me
             </button>
@@ -162,7 +171,7 @@ export default function Azaman() {
             <button
               onClick={scrollToContact}
               className="offset-btn px-5 py-2.5 rounded font-mono text-sm tracking-wide"
-              style={{ backgroundColor: "var(--accent)", color: "var(--bg)" }}
+              style={{ backgroundColor: "var(--btn-bg)", color: "var(--btn-fg)" }}
             >
               Get in touch
             </button>
@@ -176,19 +185,6 @@ export default function Azaman() {
           </button>
         </div>
       </motion.div>
-
-      <style jsx>{`
-        @keyframes demo-arrow-bounce {
-          0%, 100% { transform: translateX(0); }
-          50% { transform: translateX(4px); }
-        }
-        .demo-arrow {
-          animation: demo-arrow-bounce 1.4s ease-in-out infinite;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .demo-arrow { animation: none; }
-        }
-      `}</style>
     </section>
   );
 }

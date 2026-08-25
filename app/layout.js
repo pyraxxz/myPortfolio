@@ -53,7 +53,7 @@ export default function RootLayout({ children }) {
     >
       <body>
         <ViewTransitions>
-          <ThemeProvider enableSystem attribute="class" storageKey="sugru-theme" defaultTheme="dark">
+          <ThemeProvider enableSystem attribute="class" storageKey="sugru-theme" defaultTheme="light">
             <main className="mx-auto max-w-screen-sm overflow-x-hidden px-6 py-20 md:overflow-x-visible">
               {children}
             </main>

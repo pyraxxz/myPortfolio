@@ -46,7 +46,7 @@ export default function Stack() {
         viewport={{ once: true, amount: 0.15 }}
         transition={{ type: "spring", stiffness: 150, damping: 19, mass: 1.2 }}
       >
-        <p className="font-mono text-xs tracking-wider mb-3 text-accent">Node 05 · Stack</p>
+        <p className="font-mono text-xs tracking-wider mb-3 text-accent label-glow">Node 05 · Stack</p>
         <h2 className="font-display text-2xl sm:text-3xl mb-8 text-foreground">
           Components on the tray.
         </h2>

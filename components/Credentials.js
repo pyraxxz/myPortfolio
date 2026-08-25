@@ -24,7 +24,7 @@ function CountUp({ target, reduceMotion }) {
 
 const STATS = [
   { value: 1000, label: "Teams registered" },
-  { value: 30, label: "Top 30 advanced" },
+  { value: 130, label: "Top 130 advanced" },
   { value: 3900, label: "Votes · #16" },
 ];
 
@@ -40,7 +40,7 @@ export default function Credentials() {
         viewport={{ once: true, amount: 0.15 }}
         transition={{ type: "spring", stiffness: 150, damping: 19, mass: 1.2 }}
       >
-        <p className="font-mono text-xs tracking-wider mb-3 text-accent">Node 06 · Credentials</p>
+        <p className="font-mono text-xs tracking-wider mb-3 text-accent label-glow">Node 06 · Credentials</p>
         <h2 className="font-display text-2xl sm:text-3xl mb-8 text-foreground">
           Paper proof, and traction proof.
         </h2>
@@ -77,7 +77,7 @@ export default function Credentials() {
         {/* Narrative */}
         <p className="text-base text-muted mb-10 leading-relaxed">
           Out of roughly 1,000 registered teams in the Moolre Startup Cup, vetted on the live product and submission
-          video, Azaman was selected among the top 30. A public OTP-verified voting round followed. As a team of four,
+          video, Azaman was selected among the top 130. A public OTP-verified voting round followed. As a team of four,
           we campaigned across KNUST and the surrounding community, earned about 3,900 votes, and finished 16th. We did
           not reach the top 10 for the Accra investor pitch round, but set up a WhatsApp community channel on the spot
           to keep supporters connected through launch.
@@ -120,10 +120,10 @@ export default function Credentials() {
               <div className="aspect-video flex items-center justify-center">
                 <div
                   className="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
-                  style={{ backgroundColor: "var(--accent)" }}
+                  style={{ backgroundColor: "var(--btn-bg)" }}
                 >
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                    <path d="M8 5v14l11-7z" fill="var(--bg)" />
+                    <path d="M8 5v14l11-7z" fill="var(--btn-fg)" />
                   </svg>
                 </div>
               </div>

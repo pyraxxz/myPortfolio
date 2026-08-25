@@ -71,8 +71,8 @@ export default function Nav({ activeSection }) {
                 onClick={() => scrollTo("contact")}
                 className="font-mono text-xs tracking-wide px-3 py-1.5 rounded-full whitespace-nowrap transition-colors duration-200"
                 style={{
-                  backgroundColor: "var(--accent)",
-                  color: "var(--bg)",
+                  backgroundColor: "var(--btn-bg)",
+                  color: "var(--btn-fg)",
                 }}
               >
                 Contact

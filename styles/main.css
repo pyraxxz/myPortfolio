@@ -2,12 +2,10 @@
 @import url("@radix-ui/colors/gray-alpha.css");
 @import url("@radix-ui/colors/gray-dark.css");
 @import url("@radix-ui/colors/gray-dark-alpha.css");
-@import url("@radix-ui/colors/orange.css");
-@import url("@radix-ui/colors/orange-alpha.css");
-@import url("@radix-ui/colors/orange-dark.css");
-@import url("@radix-ui/colors/orange-dark-alpha.css");
-@import url("@radix-ui/colors/brown.css");
-@import url("@radix-ui/colors/brown-dark.css");
+@import url("@radix-ui/colors/blue.css");
+@import url("@radix-ui/colors/blue-alpha.css");
+@import url("@radix-ui/colors/blue-dark.css");
+@import url("@radix-ui/colors/blue-dark-alpha.css");
 @import url("@radix-ui/colors/black-alpha.css");
 @import url("@radix-ui/colors/white-alpha.css");
 
@@ -23,14 +21,18 @@
     --panel: var(--gray-2);
     --border: var(--gray-5);
     --hover: var(--gray-3);
-    --accent: var(--orange-9);
-    --accent-fg: var(--orange-12);
-    --accent-soft: var(--orange-3);
-    --accent-border: var(--orange-6);
+    --accent: var(--blue-9);
+    --accent-fg: var(--blue-12);
+    --accent-soft: var(--blue-3);
+    --accent-border: var(--blue-6);
+    --btn-bg: var(--gray-12);
+    --btn-fg: var(--gray-1);
+    --btn-blue-bg: var(--blue-9);
+    --btn-blue-fg: white;
     --scrollbar-thumb: var(--gray-5);
     --scrollbar-track: transparent;
-    --selection-background: var(--orange-3);
-    --selection-foreground: var(--orange-11);
+    --selection-background: var(--blue-3);
+    --selection-foreground: var(--blue-11);
     --radius-small: 6px;
     --radius-base: 8px;
     --radius-large: 14px;
@@ -46,14 +48,18 @@
     --panel: var(--gray-2);
     --border: var(--gray-6);
     --hover: var(--gray-3);
-    --accent: var(--orange-9);
-    --accent-fg: var(--orange-11);
-    --accent-soft: var(--orange-4);
-    --accent-border: var(--orange-8);
+    --accent: var(--blue-9);
+    --accent-fg: var(--blue-11);
+    --accent-soft: var(--blue-4);
+    --accent-border: var(--blue-8);
+    --btn-bg: var(--gray-1);
+    --btn-fg: var(--gray-12);
+    --btn-blue-bg: var(--blue-9);
+    --btn-blue-fg: white;
     --scrollbar-thumb: var(--gray-6);
     --scrollbar-track: transparent;
-    --selection-background: var(--orange-4);
-    --selection-foreground: var(--orange-11);
+    --selection-background: var(--blue-4);
+    --selection-foreground: var(--blue-11);
     --offset-fill: var(--gray-a6);
     --hairline: var(--gray-a4);
     --hairline-strong: var(--gray-a8);
@@ -154,11 +160,23 @@
     border: 1px solid var(--border);
     border-radius: 999px;
     background-color: var(--panel);
-    transition: border-color 0.25s ease, background-color 0.25s ease;
+    transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
     cursor: pointer;
   }
   .skill-chip:hover, .skill-chip.open {
     border-color: var(--hairline-strong);
+  }
+  .skill-chip:hover {
+    box-shadow: 0 0 0 1px var(--accent-border), 0 2px 8px var(--accent-soft);
+  }
+
+  .feature-card {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .feature-card:hover {
+    border-color: var(--accent-border);
+    box-shadow: 0 0 0 1px var(--accent-border), 0 4px 20px var(--accent-soft);
+    transform: translateY(-2px);
   }
 
   .lightbox-overlay {
@@ -172,6 +190,26 @@
   }
 
   .profile-photo-ring { transition: stroke 0.4s ease; }
+
+  /* Animated arrow floating above the Try Azaman CTA */
+  .page-arrow-float {
+    animation: arrow-float 1.8s ease-in-out infinite;
+  }
+
+  /* Subtle gradient sweep for section labels */
+  .label-glow {
+    animation: label-glow 3s ease-in-out infinite;
+  }
+}
+
+@keyframes arrow-float {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(8px); opacity: 1; }
+}
+
+@keyframes label-glow {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -180,4 +218,6 @@
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+  .page-arrow-float { animation: none; opacity: 0.7; }
+  .label-glow { animation: none; opacity: 0.85; }
 }

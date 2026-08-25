@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import * as FadeIn from "@/components/motion/staggers/fade";
+import TraceBox from "./TraceBox";
 
 export default function Hero() {
   const reduceMotion = useReducedMotion();
@@ -24,16 +25,6 @@ export default function Hero() {
   };
 
   const ringCircumference = 2 * Math.PI * 47;
-
-  const itemVariants = reduceMotion
-    ? { hidden: { opacity: 0 }, show: { opacity: 1, transition: { duration: 0.4 } } }
-    : {
-        hidden: { opacity: 0, y: 16, filter: "blur(6px)" },
-        show: {
-          opacity: 1, y: 0, filter: "blur(0px)",
-          transition: { type: "spring", stiffness: 150, damping: 19, mass: 1.2 },
-        },
-      };
 
   return (
     <section id="hero" className="pt-8 pb-16">
@@ -80,11 +71,13 @@ export default function Hero() {
           </div>
         </FadeIn.Item>
 
-        {/* Headline */}
+        {/* Headline with trace box */}
         <FadeIn.Item>
-          <h1 className="font-display text-3xl sm:text-4xl leading-[1.15] mb-5 text-foreground">
-            I built the financial infrastructure I could not find, then I make it feel obvious.
-          </h1>
+          <TraceBox className="mb-5 px-4 py-3" bracketColor="var(--accent)">
+            <h1 className="font-display text-3xl sm:text-4xl leading-[1.15] text-foreground">
+              I built the financial infrastructure I could not find, then I make it feel obvious.
+            </h1>
+          </TraceBox>
         </FadeIn.Item>
 
         {/* Subline */}
@@ -94,10 +87,9 @@ export default function Hero() {
           </p>
         </FadeIn.Item>
 
-        {/* Status line */}
+        {/* Status line — no glowing orb */}
         <FadeIn.Item>
           <div className="flex items-center gap-2 mb-2 font-mono text-xs flex-wrap text-muted">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent" style={{ animation: "pulse-dot 2s ease-in-out infinite" }} />
             <span>Azaman: v0.3.0 · Android (Kotlin/Compose)</span>
             <span className="text-muted/40">·</span>
             <span>Last deploy: Aug 2026</span>
@@ -118,7 +110,7 @@ export default function Hero() {
               <button
                 onClick={scrollToAzaman}
                 className="offset-btn px-5 py-2.5 rounded font-mono text-sm tracking-wide"
-                style={{ backgroundColor: "var(--accent)", color: "var(--bg)" }}
+                style={{ backgroundColor: "var(--btn-bg)", color: "var(--btn-fg)" }}
               >
                 View Azaman
               </button>
@@ -137,10 +129,6 @@ export default function Hero() {
       <style jsx>{`
         @keyframes draw-ring {
           to { stroke-dashoffset: 0; }
-        }
-        @keyframes pulse-dot {
-          0%, 100% { opacity: 0.4; }
-          50% { opacity: 1; }
         }
       `}</style>
     </section>
