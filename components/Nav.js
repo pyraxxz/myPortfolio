@@ -4,15 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
 
-const NAV_ITEMS = [
-  { id: "origin", label: "Origin" },
-  { id: "azaman", label: "Azaman" },
-  { id: "builds", label: "Builds" },
-  { id: "stack", label: "Stack" },
-  { id: "credentials", label: "Credentials" },
-];
-
-export default function Nav({ activeSection }) {
+export default function Nav() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -42,42 +34,14 @@ export default function Nav({ activeSection }) {
             borderBottom: "1px solid var(--border)",
           }}
         >
-          <div className="max-w-screen-sm mx-auto px-6 py-3 flex items-center justify-between gap-3">
+          <div className="max-w-screen-sm mx-auto px-6 py-3 flex items-center justify-between">
             <button
               onClick={() => scrollTo("hero")}
               className="font-display text-sm tracking-tight whitespace-nowrap text-foreground"
             >
-              Sugru Taimako
+              Sugru Taimako <span className="text-muted">(Pyrax)</span>
             </button>
-
-            <div className="flex items-center gap-3 sm:gap-5 overflow-x-auto no-scrollbar">
-              {NAV_ITEMS.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollTo(item.id)}
-                  className="font-mono text-xs tracking-wide whitespace-nowrap transition-colors duration-200"
-                  style={{
-                    color: activeSection === item.id ? "var(--accent)" : "var(--muted)",
-                  }}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <ThemeToggle />
-              <button
-                onClick={() => scrollTo("contact")}
-                className="font-mono text-xs tracking-wide px-3 py-1.5 rounded-full whitespace-nowrap transition-colors duration-200"
-                style={{
-                  backgroundColor: "var(--btn-bg)",
-                  color: "var(--btn-fg)",
-                }}
-              >
-                Contact
-              </button>
-            </div>
+            <ThemeToggle />
           </div>
         </motion.nav>
       )}

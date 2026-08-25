@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import TraceBox from "./TraceBox";
 
 const LINKS = [
@@ -12,9 +13,18 @@ const LINKS = [
 
 export default function Contact() {
   const reduceMotion = useReducedMotion();
+  const sectionRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const headingY = reduceMotion ? 0 : useTransform(scrollYProgress, [0, 1], [0, -40]);
+  const headingOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 1, 0]);
 
   return (
-    <section id="contact" className="py-16">
+    <section id="contact" ref={sectionRef} className="py-16 relative">
       <motion.div
         initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16, filter: "blur(6px)" }}
         whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -22,9 +32,12 @@ export default function Contact() {
         transition={{ type: "spring", stiffness: 150, damping: 19, mass: 1.2 }}
       >
         <p className="font-mono text-xs tracking-wider mb-3 text-accent label-glow">Node 07 · Contact</p>
-        <h2 className="font-display text-2xl sm:text-3xl mb-4 text-foreground">
+        <motion.h2
+          className="font-display text-2xl sm:text-3xl mb-4 text-foreground sticky top-20 z-10"
+          style={{ y: headingY, opacity: headingOpacity }}
+        >
           Let's build something.
-        </h2>
+        </motion.h2>
         <p className="text-base text-muted mb-6 leading-relaxed">
           Open to collaborations on fintech infrastructure, Android engineering, or vision-AI tooling.
           The fastest way to reach me is email.

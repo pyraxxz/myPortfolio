@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence, useReducedMotion, useScroll, useTransform } from "framer-motion";
 
 const ROWS = [
   {
@@ -37,9 +37,18 @@ export default function Stack() {
   const reduceMotion = useReducedMotion();
   const [expanded, setExpanded] = useState(false);
   const [hoverKey, setHoverKey] = useState(null);
+  const sectionRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const headingY = reduceMotion ? 0 : useTransform(scrollYProgress, [0, 1], [0, -40]);
+  const headingOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 1, 0]);
 
   return (
-    <section id="stack" className="py-16">
+    <section id="stack" ref={sectionRef} className="py-16 relative">
       <motion.div
         initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16, filter: "blur(6px)" }}
         whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -47,9 +56,12 @@ export default function Stack() {
         transition={{ type: "spring", stiffness: 150, damping: 19, mass: 1.2 }}
       >
         <p className="font-mono text-xs tracking-wider mb-3 text-accent label-glow">Node 05 · Stack</p>
-        <h2 className="font-display text-2xl sm:text-3xl mb-8 text-foreground">
+        <motion.h2
+          className="font-display text-2xl sm:text-3xl mb-8 text-foreground sticky top-20 z-10"
+          style={{ y: headingY, opacity: headingOpacity }}
+        >
           Components on the tray.
-        </h2>
+        </motion.h2>
 
         <div className="space-y-5">
           {ROWS.map((row, rowIdx) => {
@@ -76,7 +88,7 @@ export default function Stack() {
                         key={key}
                         onClick={() => setHoverKey(isOpen ? null : key)}
                         onMouseEnter={() => setHoverKey(key)}
-                        onMouseLeave={() => setHoverKey((k) => (k === key ? null : k))}
+                        onMouseLeave={() => setHoverKey((k) => (k === key ? null : key))}
                         className={`skill-chip px-4 py-2 text-left ${isOpen ? "open" : ""}`}
                       >
                         <span className="text-sm font-medium block text-foreground">{item.name}</span>
@@ -128,7 +140,7 @@ export default function Stack() {
                               key={key}
                               onClick={() => setHoverKey(isOpen ? null : key)}
                               onMouseEnter={() => setHoverKey(key)}
-                              onMouseLeave={() => setHoverKey((k) => (k === key ? null : k))}
+                              onMouseLeave={() => setHoverKey((k) => (k === key ? null : key))}
                               className={`skill-chip px-4 py-2 text-left ${isOpen ? "open" : ""}`}
                             >
                               <span className="text-sm font-medium block text-foreground">{item.name}</span>

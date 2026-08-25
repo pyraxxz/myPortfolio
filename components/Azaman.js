@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import TraceBox from "./TraceBox";
 
 const FEATURES = [
@@ -24,6 +25,15 @@ const FEATURES = [
 
 export default function Azaman() {
   const reduceMotion = useReducedMotion();
+  const sectionRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const headingY = reduceMotion ? 0 : useTransform(scrollYProgress, [0, 1], [0, -40]);
+  const headingOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 1, 0]);
 
   const scrollToContact = () => {
     document.getElementById("contact")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -42,7 +52,7 @@ export default function Azaman() {
   };
 
   return (
-    <section id="azaman" className="py-16">
+    <section id="azaman" ref={sectionRef} className="py-16 relative">
       <motion.div
         initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16, filter: "blur(6px)" }}
         whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -50,16 +60,22 @@ export default function Azaman() {
         transition={{ type: "spring", stiffness: 150, damping: 19, mass: 1.2 }}
       >
         <p className="font-mono text-xs tracking-wider mb-3 text-accent label-glow">Node 03 · Flagship Product</p>
-        <h2 className="font-display text-2xl sm:text-3xl mb-4 text-foreground">Azaman</h2>
+        <motion.h2
+          className="font-display text-2xl sm:text-3xl mb-4 text-foreground sticky top-20 z-10"
+          style={{ y: headingY, opacity: headingOpacity }}
+        >
+          Azaman
+        </motion.h2>
         <p className="text-base text-muted mb-6 leading-relaxed">
           A fintech super-app for Ghana. P2P transfer with escrow, digitized Susu, local marketplace, and social chat in one product.
         </p>
 
-        {/* Solo-build sentence with animated trace box */}
+        {/* Solo-build sentence with animated trace box — updated text */}
         <TraceBox className="mb-10 px-5 py-4" bracketColor="var(--accent)">
           <p className="text-base text-muted/80 leading-relaxed">
-            I designed and built Azaman entirely on my own, from the first Flutter prototype through the current
-            Kotlin/Compose rewrite — every line of the P2P transfer logic, the escrow system, and the Susu engine is mine.
+            I designed and built Azaman, from the first Flutter prototype through the current
+            Kotlin/Compose rewrite. The transfer logic, the escrow system, the Susu engine,
+            all of it started as one person's work.
           </p>
         </TraceBox>
 

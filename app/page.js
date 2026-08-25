@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ThemeToggle } from "@/lib/cn";
 import Nav from "@/components/Nav";
+import ScrollStrand from "@/components/ScrollStrand";
 import Hero from "@/components/Hero";
 import Origin from "@/components/Origin";
 import Azaman from "@/components/Azaman";
@@ -14,6 +13,16 @@ import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
 const SECTION_IDS = ["hero", "origin", "azaman", "builds", "stack", "credentials", "contact"];
+
+const SECTION_LABELS = {
+  hero: "Hero",
+  origin: "Origin",
+  azaman: "Azaman",
+  builds: "Build Log",
+  stack: "Stack",
+  credentials: "Credentials",
+  contact: "Contact",
+};
 
 export default function Page() {
   const [activeSection, setActiveSection] = useState("hero");
@@ -38,7 +47,12 @@ export default function Page() {
 
   return (
     <>
-      <Nav activeSection={activeSection} />
+      <Nav />
+      <ScrollStrand
+        activeSection={activeSection}
+        sectionIds={SECTION_IDS}
+        sectionLabels={SECTION_LABELS}
+      />
       <Hero />
       <Origin />
       <Azaman />

@@ -1,23 +1,18 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { motion, useInView, useReducedMotion, animate, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { useState, useRef } from "react";
+import { motion, useInView, useReducedMotion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { X, FileText, Maximize2 } from "lucide-react";
 
 function CountUp({ target, reduceMotion }) {
   const [value, setValue] = useState(0);
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.5 });
 
-  useEffect(() => {
+  useState(() => {
     if (!inView) return;
     if (reduceMotion) { setValue(target); return; }
-    const controls = animate(0, target, {
-      duration: 0.8, ease: "easeOut",
-      onUpdate: (val) => setValue(Math.round(val)),
-    });
-    return () => controls.stop();
-  }, [inView, target, reduceMotion]);
+  });
 
   return <span ref={ref}>{value.toLocaleString()}</span>;
 }
@@ -30,10 +25,19 @@ const STATS = [
 
 export default function Credentials() {
   const reduceMotion = useReducedMotion();
-  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const sectionRef = useRef(null);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const headingY = reduceMotion ? 0 : useTransform(scrollYProgress, [0, 1], [0, -40]);
+  const headingOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 1, 0]);
 
   return (
-    <section id="credentials" className="py-16">
+    <section id="credentials" ref={sectionRef} className="py-16 relative">
       <motion.div
         initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 16, filter: "blur(6px)" }}
         whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -41,37 +45,139 @@ export default function Credentials() {
         transition={{ type: "spring", stiffness: 150, damping: 19, mass: 1.2 }}
       >
         <p className="font-mono text-xs tracking-wider mb-3 text-accent label-glow">Node 06 · Credentials</p>
-        <h2 className="font-display text-2xl sm:text-3xl mb-8 text-foreground">
+        <motion.h2
+          className="font-display text-2xl sm:text-3xl mb-8 text-foreground sticky top-20 z-10"
+          style={{ y: headingY, opacity: headingOpacity }}
+        >
           Paper proof, and traction proof.
-        </h2>
+        </motion.h2>
 
-        {/* Certificate card */}
+        {/* Certificate — document icon with expand animation */}
         <motion.div
           initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mb-10 max-w-xs"
+          className="mb-10"
         >
-          <span className="offset-wrap offset-block offset-card-wrap rounded-large">
-            <button
-              onClick={() => setLightboxOpen(true)}
-              className="offset-btn block w-full rounded-large overflow-hidden text-left"
-              style={{ border: "1px solid var(--border)", backgroundColor: "var(--panel)" }}
-              aria-label="Open certificate full size"
-            >
-              <img
-                src="/azaman-certificate.jpg"
-                alt="Azaman Digital Limited certificate of incorporation"
-                className="w-full block"
-                style={{ maxHeight: 280, objectFit: "cover" }}
-              />
-            </button>
-          </span>
+          {/* Collapsed: document icon + arrow */}
+          <AnimatePresence mode="wait">
+            {!expanded ? (
+              <motion.div
+                key="collapsed"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.2 }}
+                className="flex items-center gap-4"
+              >
+                {/* Document icon button */}
+                <span className="offset-wrap offset-card-wrap rounded-large">
+                  <button
+                    onClick={() => setExpanded(true)}
+                    className="offset-btn flex items-center justify-center rounded-large border transition-colors duration-200 hover:border-accent-border"
+                    style={{
+                      border: "1px solid var(--border)",
+                      backgroundColor: "var(--panel)",
+                      width: 72,
+                      height: 88,
+                    }}
+                    aria-label="View certificate"
+                  >
+                    <FileText
+                      size={32}
+                      strokeWidth={1.5}
+                      style={{ color: "var(--muted)" }}
+                    />
+                  </button>
+                </span>
+
+                {/* Arrow + text pointing to the icon */}
+                <div className="flex items-center gap-2">
+                  <svg width="28" height="20" viewBox="0 0 28 20" fill="none" className="flex-shrink-0">
+                    <path
+                      d="M26 10H4M4 10l5-5M4 10l5 5"
+                      stroke="var(--accent)"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <p className="font-mono text-xs text-accent">
+                    Click to view certificate
+                  </p>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="expanded"
+                initial={{ opacity: 0, scale: 0.85, y: -10 }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  y: 0,
+                  transition: {
+                    type: "spring",
+                    stiffness: 200,
+                    damping: 22,
+                    mass: 0.8,
+                  },
+                }}
+                exit={{ opacity: 0, scale: 0.85, y: -10 }}
+                className="max-w-xs"
+              >
+                <div
+                  className="relative rounded-large overflow-hidden border border-border bg-panel"
+                  style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}
+                >
+                  {/* Close / collapse button */}
+                  <button
+                    onClick={() => setExpanded(false)}
+                    className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full flex items-center justify-center transition-colors"
+                    style={{
+                      backgroundColor: "color-mix(in srgb, var(--bg) 80%, transparent)",
+                      backdropFilter: "blur(4px)",
+                    }}
+                    aria-label="Collapse certificate"
+                  >
+                    <X size={14} style={{ color: "var(--muted)" }} />
+                  </button>
+
+                  {/* Certificate image with reveal animation */}
+                  <motion.div
+                    initial={{ clipPath: "inset(0 100% 0 0)", opacity: 0 }}
+                    animate={{
+                      clipPath: "inset(0 0% 0 0)",
+                      opacity: 1,
+                      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.1 },
+                    }}
+                  >
+                    <img
+                      src="/azaman-certificate.jpg"
+                      alt="Azaman Digital Limited certificate of incorporation"
+                      className="w-full block"
+                      style={{ maxHeight: 400, objectFit: "contain", backgroundColor: "var(--bg)" }}
+                    />
+                  </motion.div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <p className="font-mono text-xs mt-3 tracking-wide text-muted">
             Azaman Digital Limited · Business Registration
           </p>
-          <p className="font-mono text-xs mt-1 text-muted/60">Tap to view full size</p>
+          {expanded && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              onClick={() => setExpanded(false)}
+              className="font-mono text-xs mt-1 text-muted/60 hover:text-accent transition-colors"
+            >
+              Tap to collapse
+            </motion.button>
+          )}
         </motion.div>
 
         {/* Narrative */}
@@ -94,7 +200,7 @@ export default function Credentials() {
               transition={{ duration: 0.4, delay: i * 0.1 }}
             >
               <p className="font-mono text-2xl sm:text-3xl mb-1 text-foreground">
-                <CountUp target={stat.value} reduceMotion={reduceMotion} />
+                {stat.value.toLocaleString()}
               </p>
               <p className="font-mono text-xs tracking-wide text-muted leading-tight">
                 {stat.label}
@@ -151,38 +257,6 @@ export default function Credentials() {
           </a>
         </div>
       </motion.div>
-
-      {/* Lightbox */}
-      <AnimatePresence>
-        {lightboxOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="lightbox-overlay"
-            onClick={() => setLightboxOpen(false)}
-          >
-            <button
-              onClick={() => setLightboxOpen(false)}
-              className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors"
-              aria-label="Close lightbox"
-            >
-              <X size={24} />
-            </button>
-            <motion.img
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              src="/azaman-certificate.jpg"
-              alt="Azaman Digital Limited certificate"
-              className="max-w-[90vw] max-h-[90vh] rounded-large object-contain"
-              onClick={(e) => e.stopPropagation()}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }
