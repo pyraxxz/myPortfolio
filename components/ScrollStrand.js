@@ -7,7 +7,6 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
   const reduceMotion = useReducedMotion();
   const containerRef = useRef(null);
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [rungPositions, setRungPositions] = useState([]);
   const [hoveredNode, setHoveredNode] = useState(null);
   const rafRef = useRef(null);
 
@@ -25,34 +24,7 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
     return () => window.removeEventListener("resize", updateDims);
   }, []);
 
-  // Compute rung positions from actual section boundaries
-  const computeRungPositions = useCallback(() => {
-    if (!vh) return;
-    const navHeight = 56;
-    const strandTop = navHeight + 20;
-    const strandBottom = vh - 20;
-    const strandHeight = strandBottom - strandTop;
-
-    const positions = sectionIds.map((id) => {
-      const el = document.getElementById(id);
-      if (!el) return { id, ratio: 0, top: strandTop };
-
-      const rect = el.getBoundingClientRect();
-      // Map section center to strand position
-      const sectionCenter = rect.top + rect.height / 2;
-      // Clamp to strand range
-      let ratio = (sectionCenter - strandTop) / (document.documentElement.scrollHeight - vh);
-      ratio = Math.max(0, Math.min(1, ratio));
-      return {
-        id,
-        ratio,
-        top: strandTop + ratio * strandHeight,
-      };
-    });
-    setRungPositions(positions);
-  }, [vh, sectionIds]);
-
-  // Scroll progress + rung position updater
+  // Scroll progress listener (throttled via rAF)
   useEffect(() => {
     const handleScroll = () => {
       if (rafRef.current) return;
@@ -74,67 +46,76 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
     };
   }, []);
 
-  // Recompute rung positions on scroll and resize
-  useEffect(() => {
-    computeRungPositions();
-    const recompute = () => computeRungPositions();
-    window.addEventListener("scroll", recompute, { passive: true });
-    window.addEventListener("resize", recompute, { passive: true });
-    const interval = setInterval(recompute, 1000); // periodic recheck for content shifts
-    return () => {
-      window.removeEventListener("scroll", recompute);
-      window.removeEventListener("resize", recompute);
-      clearInterval(interval);
-    };
-  }, [computeRungPositions]);
+  // Helix is 70% of viewport height, vertically centered
+  const helixHeightRatio = 0.7;
+  const helixHeight = vh > 0 ? Math.round(vh * helixHeightRatio) : 0;
+  const helixTop = vh > 0 ? Math.round((vh - helixHeight) / 2) : 0;
 
   // Helix parameters
-  const navHeight = 56;
-  const strandTop = navHeight + 20;
-  const strandBottom = vh - 20;
-  const strandHeight = Math.max(0, strandBottom - strandTop);
   const amplitude = isMobile ? 5 : 8;
   const baseX = isMobile ? 14 : 20;
-  const pitch = isMobile ? 100 : 120;
-  const totalTwists = Math.max(3, strandHeight / pitch);
+  const pitch = isMobile ? 80 : 110;
+  const totalTwists = Math.max(3, helixHeight / pitch);
+  // Phase rotates in place with scroll — the helix spins but doesn't travel
   const phase = reduceMotion ? 0 : scrollProgress * Math.PI * totalTwists * 2;
-  const step = 4; // px resolution for path sampling
+  const step = 4;
 
-  // Generate sine-wave path string for one strand with phase offset
+  // Generate sine-wave path — fixed length, only phase changes (spins in place)
   const generatePath = (phaseOffset) => {
-    if (strandHeight <= 0) return "";
+    if (helixHeight <= 0) return "";
     let d = "";
-    for (let y = 0; y <= strandHeight; y += step) {
+    for (let y = 0; y <= helixHeight; y += step) {
       const x = baseX + amplitude * Math.sin((y / pitch) * Math.PI * 2 + phase + phaseOffset);
-      const py = strandTop + y;
-      d += y === 0 ? `M ${x.toFixed(2)} ${py.toFixed(2)}` : ` L ${x.toFixed(2)} ${py.toFixed(2)}`;
+      d += y === 0 ? `M ${x.toFixed(2)} ${y.toFixed(2)}` : ` L ${x.toFixed(2)} ${y.toFixed(2)}`;
     }
     return d;
   };
 
   const strand1Path = generatePath(0);
-  const strand2Path = generatePath(Math.PI); // opposite phase = other strand
+  const strand2Path = generatePath(Math.PI);
 
-  // Get x position of both strands at a specific y
+  // Rungs are evenly spaced across the helix — 7 sections, fixed positions
+  const rungCount = sectionIds.length;
+  const rungSpacing = rungCount > 1 ? helixHeight / (rungCount - 1) : 0;
+  const rungs = sectionIds.map((id, i) => ({
+    id,
+    y: rungSpacing * i,
+    label: sectionLabels[id] || id,
+  }));
+
+  // The dot position: map scroll progress to y on the helix
+  // 0 = top of helix, 1 = bottom
+  const dotY = scrollProgress * helixHeight;
+
+  // Find which rung the dot is closest to (for active highlight)
+  const activeRungIndex = Math.min(
+    rungCount - 1,
+    Math.max(0, Math.round(scrollProgress * (rungCount - 1)))
+  );
+
+  // Get strand x position at a specific y within the helix
   const strandXAt = (y, phaseOffset) => {
-    const localY = y - strandTop;
-    return baseX + amplitude * Math.sin((localY / pitch) * Math.PI * 2 + phase + phaseOffset);
+    return baseX + amplitude * Math.sin((y / pitch) * Math.PI * 2 + phase + phaseOffset);
   };
 
   const handleRungClick = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  if (!vh) return null;
+  if (!vh || helixHeight <= 0) return null;
 
   const svgWidth = isMobile ? 36 : 48;
-  const svgHeight = vh;
+  const svgHeight = helixHeight;
 
   return (
     <div
       ref={containerRef}
-      className="fixed right-0 top-0 z-40 pointer-events-none"
-      style={{ width: svgWidth, height: svgHeight }}
+      className="fixed right-0 z-40 pointer-events-none"
+      style={{
+        width: svgWidth,
+        top: helixTop,
+        height: helixHeight,
+      }}
     >
       <svg
         width={svgWidth}
@@ -143,39 +124,27 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
         fill="none"
         className="pointer-events-none"
       >
-        {/* Strand 1 */}
-        <path
-          d={strand1Path}
-          stroke="var(--hairline)"
-          strokeWidth="1"
-          fill="none"
-        />
+        {/* Strand 1 — fixed in place, spins via phase */}
+        <path d={strand1Path} stroke="var(--hairline)" strokeWidth="1" fill="none" />
         {/* Strand 2 */}
-        <path
-          d={strand2Path}
-          stroke="var(--hairline)"
-          strokeWidth="1"
-          fill="none"
-        />
+        <path d={strand2Path} stroke="var(--hairline)" strokeWidth="1" fill="none" />
 
-        {/* Rungs */}
-        {rungPositions.map((rung) => {
-          const y = rung.top;
-          if (y < strandTop || y > strandBottom) return null;
-          const x1 = strandXAt(y, 0);
-          const x2 = strandXAt(y, Math.PI);
-          const isActive = activeSection === rung.id;
+        {/* Rungs at fixed positions */}
+        {rungs.map((rung, i) => {
+          const x1 = strandXAt(rung.y, 0);
+          const x2 = strandXAt(rung.y, Math.PI);
+          const isActive = i === activeRungIndex && activeSection === rung.id;
+          const isNearActive = i === activeRungIndex;
           const isHovered = hoveredNode === rung.id;
           const midX = (x1 + x2) / 2;
-          const strokeColor = isActive ? "var(--accent)" : "var(--hairline)";
-          const label = sectionLabels[rung.id] || rung.id;
+          const strokeColor = isNearActive ? "var(--accent)" : "var(--hairline)";
 
           return (
             <g key={rung.id}>
-              {/* Invisible hit area for clicking */}
+              {/* Invisible hit area */}
               <rect
                 x={0}
-                y={y - 12}
+                y={rung.y - 12}
                 width={svgWidth}
                 height={24}
                 fill="transparent"
@@ -188,88 +157,107 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
               {/* Rung line */}
               <line
                 x1={x1}
-                y1={y}
+                y1={rung.y}
                 x2={x2}
-                y2={y}
+                y2={rung.y}
                 stroke={strokeColor}
-                strokeWidth={isActive ? 1.5 : 1}
+                strokeWidth={isNearActive ? 1.5 : 1}
                 className="pointer-events-none"
-                style={{
-                  transition: "stroke 0.3s ease, stroke-width 0.3s ease",
-                }}
+                style={{ transition: "stroke 0.3s ease, stroke-width 0.3s ease" }}
               />
 
-              {/* Active dot */}
-              {isActive && (
-                <circle
-                  cx={midX}
-                  cy={y}
-                  r={3}
-                  fill="var(--accent)"
-                  className="pointer-events-none"
-                />
-              )}
-
               {/* Hover dot for non-active */}
-              {!isActive && isHovered && (
-                <circle
-                  cx={midX}
-                  cy={y}
-                  r={2}
-                  fill="var(--muted)"
-                  className="pointer-events-none"
-                />
+              {!isNearActive && isHovered && (
+                <circle cx={midX} cy={rung.y} r={2} fill="var(--muted)" className="pointer-events-none" />
               )}
 
               {/* Connector line to label tag */}
-              {(isActive || isHovered) && (
+              {(isNearActive || isHovered) && (
                 <line
                   x1={Math.min(x1, x2)}
-                  y1={y}
+                  y1={rung.y}
                   x2={Math.min(x1, x2) - 4}
-                  y2={y}
-                  stroke={isActive ? "var(--accent)" : "var(--muted)"}
+                  y2={rung.y}
+                  stroke={isNearActive ? "var(--accent)" : "var(--muted)"}
                   strokeWidth="1"
                   className="pointer-events-none"
-                  opacity={isActive ? 1 : 0.5}
+                  opacity={isNearActive ? 1 : 0.5}
                 />
               )}
             </g>
           );
         })}
+
+        {/* The moving dot — this is the only thing that moves up and down */}
+        <circle
+          cx={baseX}
+          cy={dotY}
+          r={3.5}
+          fill="var(--accent)"
+          className="pointer-events-none"
+          style={{
+            transition: reduceMotion ? "cy 0.3s ease" : "none",
+          }}
+        />
+        {/* Glow ring around the dot */}
+        <circle
+          cx={baseX}
+          cy={dotY}
+          r={6}
+          fill="none"
+          stroke="var(--accent)"
+          strokeWidth="0.5"
+          opacity="0.3"
+          className="pointer-events-none"
+        />
       </svg>
 
-      {/* Label tags — rendered as HTML for crisp text */}
-      {rungPositions.map((rung) => {
-        const y = rung.top;
-        if (y < strandTop || y > strandBottom) return null;
-        const isActive = activeSection === rung.id;
-        const isHovered = hoveredNode === rung.id;
-        if (!isActive && !isHovered) return null;
+      {/* Active section label tag — follows the dot */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          right: isMobile ? 26 : 34,
+          top: dotY - 9,
+          transition: reduceMotion ? "top 0.3s ease" : "top 0.05s linear",
+        }}
+      >
+        <span
+          className="font-mono text-[10px] tracking-wider px-1.5 py-0.5 rounded whitespace-nowrap"
+          style={{
+            backgroundColor: "var(--accent-soft)",
+            color: "var(--accent-fg)",
+            border: "1px solid var(--accent-border)",
+          }}
+        >
+          {sectionLabels[activeSection] || activeSection}
+        </span>
+      </div>
 
-        const label = sectionLabels[rung.id] || rung.id;
-        const tagLeft = isMobile ? 2 : 6;
+      {/* Hover label tags for non-active rungs */}
+      {rungs.map((rung, i) => {
+        if (i === activeRungIndex && activeSection === rung.id) return null;
+        const isHovered = hoveredNode === rung.id;
+        if (!isHovered) return null;
 
         return (
           <div
-            key={`label-${rung.id}`}
+            key={`hover-label-${rung.id}`}
             className="absolute pointer-events-none"
             style={{
               right: isMobile ? 26 : 34,
-              top: y - 9,
-              opacity: isActive ? 1 : 0.5,
-              transition: "opacity 0.2s ease",
+              top: rung.y - 9,
+              opacity: 0.5,
             }}
           >
             <span
               className="font-mono text-[10px] tracking-wider px-1.5 py-0.5 rounded whitespace-nowrap"
               style={{
-                backgroundColor: isActive ? "var(--accent-soft)" : "var(--panel)",
-                color: isActive ? "var(--accent-fg)" : "var(--muted)",
-                border: `1px solid ${isActive ? "var(--accent-border)" : "var(--border)"}`,
+                backgroundColor: "var(--panel)",
+                color: "var(--muted)",
+                border: "1px solid var(--border)",
               }}
             >
-              {label}
+              {rung.label}
             </span>
           </div>
         );

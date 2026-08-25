@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useReducedMotion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { X, Smartphone } from "lucide-react";
 import TraceBox from "./TraceBox";
 
 const FEATURES = [
@@ -25,6 +26,7 @@ const FEATURES = [
 
 export default function Azaman() {
   const reduceMotion = useReducedMotion();
+  const [previewOpen, setPreviewOpen] = useState(false);
   const sectionRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
@@ -70,7 +72,7 @@ export default function Azaman() {
           A fintech super-app for Ghana. P2P transfer with escrow, digitized Susu, local marketplace, and social chat in one product.
         </p>
 
-        {/* Solo-build sentence with animated trace box — updated text */}
+        {/* Solo-build sentence with animated trace box */}
         <TraceBox className="mb-10 px-5 py-4" bracketColor="var(--accent)">
           <p className="text-base text-muted/80 leading-relaxed">
             I designed and built Azaman, from the first Flutter prototype through the current
@@ -96,7 +98,7 @@ export default function Azaman() {
           ))}
         </div>
 
-        {/* Try the demo — animated arrow on the PAGE pointing to the button */}
+        {/* Try the demo — animated arrow */}
         <motion.div
           initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12, filter: "blur(4px)" }}
           whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
@@ -104,7 +106,6 @@ export default function Azaman() {
           transition={{ type: "spring", stiffness: 140, damping: 20, delay: 0.15 }}
           className="mb-10"
         >
-          {/* Animated arrow on the page — floating above the button */}
           <div className="flex items-center gap-3 mb-3">
             <div className="page-arrow-float flex items-center gap-1">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -139,38 +140,139 @@ export default function Azaman() {
           </div>
         </motion.div>
 
-        {/* Live phone preview — real azaman.me site */}
+        {/* Website preview — phone icon that expands */}
         <motion.div
-          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ type: "spring", stiffness: 120, damping: 20 }}
-          className="flex justify-center mb-8"
+          className="mb-10"
         >
-          <button
-            onClick={openSite}
-            className="group rounded-[2rem] border border-border bg-panel p-2 transition-colors duration-200 hover:border-muted/40"
-            aria-label="Visit azaman.me"
-          >
-            <div
-              className="rounded-[1.6rem] overflow-hidden relative"
-              style={{ width: 280, height: 560 }}
-            >
-              <iframe
-                src="https://azaman.me"
-                title="Azaman website preview"
-                className="w-full h-full border-0 pointer-events-none group-hover:opacity-90 transition-opacity"
-                style={{ transform: "scale(0.65)", transformOrigin: "top left", width: "431px", height: "862px" }}
-                loading="lazy"
-                sandbox="allow-scripts allow-same-origin"
-              />
-            </div>
-          </button>
-        </motion.div>
+          <AnimatePresence mode="wait">
+            {!previewOpen ? (
+              /* Collapsed: phone icon + arrow */
+              <motion.div
+                key="collapsed"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.2 }}
+                className="flex items-center gap-4"
+              >
+                {/* Phone icon button */}
+                <span className="offset-wrap offset-card-wrap rounded-large">
+                  <button
+                    onClick={() => setPreviewOpen(true)}
+                    className="offset-btn flex items-center justify-center rounded-large border transition-colors duration-200 hover:border-accent-border"
+                    style={{
+                      border: "1px solid var(--border)",
+                      backgroundColor: "var(--panel)",
+                      width: 72,
+                      height: 88,
+                    }}
+                    aria-label="Open website preview"
+                  >
+                    <Smartphone
+                      size={32}
+                      strokeWidth={1.5}
+                      style={{ color: "var(--muted)" }}
+                    />
+                  </button>
+                </span>
 
-        <p className="font-mono text-xs text-center text-muted/60 mb-8">
-          Live preview of azaman.me — tap to visit →
-        </p>
+                {/* Arrow + text pointing to the icon */}
+                <div className="flex items-center gap-2">
+                  <svg width="28" height="20" viewBox="0 0 28 20" fill="none" className="flex-shrink-0">
+                    <path
+                      d="M26 10H4M4 10l5-5M4 10l5 5"
+                      stroke="var(--accent)"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  <p className="font-mono text-xs text-accent">
+                    Click to preview azaman.me
+                  </p>
+                </div>
+              </motion.div>
+            ) : (
+              /* Expanded: phone mockup with iframe */
+              <motion.div
+                key="expanded"
+                initial={{ opacity: 0, scale: 0.85, y: -10 }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  y: 0,
+                  transition: {
+                    type: "spring",
+                    stiffness: 200,
+                    damping: 22,
+                    mass: 0.8,
+                  },
+                }}
+                exit={{ opacity: 0, scale: 0.85, y: -10 }}
+                className="flex justify-center"
+              >
+                <div
+                  className="relative rounded-[2rem] border border-border bg-panel p-2"
+                  style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}
+                >
+                  {/* Close button */}
+                  <button
+                    onClick={() => setPreviewOpen(false)}
+                    className="absolute top-2 right-2 z-10 w-7 h-7 rounded-full flex items-center justify-center transition-colors"
+                    style={{
+                      backgroundColor: "color-mix(in srgb, var(--bg) 80%, transparent)",
+                      backdropFilter: "blur(4px)",
+                    }}
+                    aria-label="Close preview"
+                  >
+                    <X size={14} style={{ color: "var(--muted)" }} />
+                  </button>
+
+                  {/* Phone screen with clip-path reveal */}
+                  <motion.div
+                    initial={{ clipPath: "inset(0 100% 0 0)" }}
+                    animate={{
+                      clipPath: "inset(0 0% 0 0)",
+                      transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.1 },
+                    }}
+                    className="rounded-[1.6rem] overflow-hidden relative"
+                    style={{ width: 280, height: 560 }}
+                  >
+                    <iframe
+                      src="https://azaman.me"
+                      title="Azaman website preview"
+                      className="w-full h-full border-0"
+                      style={{ transform: "scale(0.65)", transformOrigin: "top left", width: "431px", height: "862px" }}
+                      loading="lazy"
+                      sandbox="allow-scripts allow-same-origin"
+                    />
+                  </motion.div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {!previewOpen && (
+            <p className="font-mono text-xs mt-3 text-muted/60">
+              Live preview of azaman.me
+            </p>
+          )}
+          {previewOpen && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              onClick={() => setPreviewOpen(false)}
+              className="font-mono text-xs mt-3 text-muted/60 hover:text-accent transition-colors block mx-auto"
+            >
+              Tap to collapse
+            </motion.button>
+          )}
+        </motion.div>
 
         {/* CTAs */}
         <div className="flex items-center gap-4 flex-wrap">
