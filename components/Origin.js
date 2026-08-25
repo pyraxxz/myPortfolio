@@ -2,13 +2,41 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 
+/* Small inline LinkedIn button */
+function LinkedinBtn({ href }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-medium transition-all duration-200 hover:opacity-80"
+      style={{ backgroundColor: "var(--btn-blue-bg)", color: "var(--btn-blue-fg)", verticalAlign: "baseline" }}
+    >
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z" />
+      </svg>
+      LinkedIn
+    </a>
+  );
+}
+
 const NODES = [
   {
     tag: "Node 01",
     label: "BiTT, Tamale",
     dates: "2019–2022",
     short: "Self-taught software foundations",
-    detail: "Learned C++, Python, Java, and HTML/CSS under Saeed Bala Ahmed at BiTT, before university. This was the training current that set the direction.",
+    detail: (
+      <>
+        Learned C++, Python, Java, and HTML/CSS under Saeed Bala Ahmed at BiTT
+        {" — "}currently a Vulnerable Machine Engineer at OffSec{" "}
+        <LinkedinBtn href="https://www.linkedin.com/in/saeedbalaahmed" />
+        {" "}and Sayibu Sulemana
+        {" — "}a DevOps and cloud engineer, founder &amp; CTO of SecureAxis Technologies{" "}
+        <LinkedinBtn href="https://www.linkedin.com/in/sayibu-sulemana-2b30ab17a" />
+        {" "}before university. This was the training current that set the direction.
+      </>
+    ),
   },
   {
     tag: "Node 02",
@@ -65,9 +93,9 @@ export default function Origin() {
               </div>
               <p className="text-sm font-medium text-foreground mb-2">{node.label}</p>
               <p className="text-xs text-muted leading-relaxed">{node.short}</p>
-              <p className="text-xs text-muted/70 leading-relaxed mt-2 pt-2 border-t border-border">
+              <div className="text-xs text-muted/70 leading-relaxed mt-2 pt-2 border-t border-border">
                 {node.detail}
-              </p>
+              </div>
             </div>
           ))}
         </div>

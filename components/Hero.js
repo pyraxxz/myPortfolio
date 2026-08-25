@@ -42,6 +42,7 @@ export default function Hero() {
               role="img"
               aria-label="Sugru Taimako, profile photo"
             >
+              {/* Profile photo */}
               <img
                 src="/myprofile.jpg"
                 alt="Sugru Taimako"
@@ -50,6 +51,7 @@ export default function Hero() {
                 className="rounded-full object-cover w-full h-full"
                 style={{ display: "block" }}
               />
+              {/* Animated ring */}
               <svg className="absolute top-0 left-0 pointer-events-none" width="80" height="80" viewBox="0 0 80 80">
                 <circle
                   cx="40" cy="40" r="39"
@@ -62,6 +64,34 @@ export default function Hero() {
                   style={reduceMotion ? {} : { animation: "draw-ring 0.7s ease-out 0.3s forwards" }}
                 />
               </svg>
+
+              {/* Android sticker — overlapping the photo bottom-right with depth */}
+              <motion.div
+                initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0, rotate: -20 }}
+                animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.6 }}
+                className="absolute"
+                style={{
+                  bottom: -6,
+                  right: -6,
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                  backgroundColor: "var(--bg)",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.25), 0 0 0 1.5px var(--border)",
+                  zIndex: 10,
+                  pointerEvents: "none",
+                }}
+              >
+                <img
+                  src="/android-icon.svg"
+                  alt=""
+                  width={30}
+                  height={30}
+                  style={{ width: "100%", height: "100%", objectFit: "contain", padding: 2 }}
+                />
+              </motion.div>
             </div>
             <p className="font-mono text-xs tracking-wide text-muted leading-relaxed">
               Software Engineer · Electrical Engineering, KNUST

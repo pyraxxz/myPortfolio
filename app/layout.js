@@ -28,6 +28,10 @@ const plexMono = IBM_Plex_Mono({
 export const metadata = {
   title: 'Sugru Taimako — Software & Electrical Engineer',
   description: 'Building the financial infrastructure I could not find, then making it feel obvious. Currently building Azaman and Wayfinder.',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+  },
   openGraph: {
     title: 'Sugru Taimako — Software & Electrical Engineer',
     description: 'Fintech infrastructure builder. Azaman, Wayfinder, and the signal between.',
