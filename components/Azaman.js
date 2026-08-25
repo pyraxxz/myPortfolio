@@ -36,6 +36,10 @@ export default function Azaman() {
     window.open("https://azaman.me", "_blank");
   };
 
+  const openDemo = () => {
+    window.open("https://azm-web-demo.vercel.app/", "_blank");
+  };
+
   return (
     <section id="azaman" className="py-16">
       <motion.div
@@ -46,8 +50,12 @@ export default function Azaman() {
       >
         <p className="font-mono text-xs tracking-wider mb-3 text-accent">Node 03 · Flagship Product</p>
         <h2 className="font-display text-2xl sm:text-3xl mb-4 text-foreground">Azaman</h2>
-        <p className="text-base text-muted mb-10 leading-relaxed">
+        <p className="text-base text-muted mb-6 leading-relaxed">
           A fintech super-app for Ghana. P2P transfer with escrow, digitized Susu, local marketplace, and social chat in one product.
+        </p>
+        <p className="text-base text-muted/70 mb-10 leading-relaxed">
+          I designed and built Azaman entirely on my own, from the first Flutter prototype through the current
+          Kotlin/Compose rewrite — every line of the P2P transfer logic, the escrow system, and the Susu engine is mine.
         </p>
 
         {/* Feature grid */}
@@ -66,6 +74,45 @@ export default function Azaman() {
             </motion.div>
           ))}
         </div>
+
+        {/* Try the demo — animated callout with arrow */}
+        <motion.div
+          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 12, filter: "blur(4px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ type: "spring", stiffness: 140, damping: 20, delay: 0.15 }}
+          className="mb-10"
+        >
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="offset-wrap offset-btn-wrap rounded">
+              <button
+                onClick={openDemo}
+                className="offset-btn px-5 py-2.5 rounded font-mono text-sm tracking-wide flex items-center gap-2"
+                style={{ backgroundColor: "var(--accent)", color: "var(--bg)" }}
+              >
+                Try Azaman
+                {/* Animated arrow */}
+                <svg
+                  width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  className="demo-arrow"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M5 12h14M13 6l6 6-6 6"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </span>
+            <p className="font-mono text-xs text-muted/60 leading-relaxed max-w-xs">
+              This is a web build of the app so you can explore the interface and get a feel for it.
+              For the full experience, try it on a phone.
+            </p>
+          </div>
+        </motion.div>
 
         {/* Live phone preview — real azaman.me site */}
         <motion.div
@@ -129,6 +176,19 @@ export default function Azaman() {
           </button>
         </div>
       </motion.div>
+
+      <style jsx>{`
+        @keyframes demo-arrow-bounce {
+          0%, 100% { transform: translateX(0); }
+          50% { transform: translateX(4px); }
+        }
+        .demo-arrow {
+          animation: demo-arrow-bounce 1.4s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .demo-arrow { animation: none; }
+        }
+      `}</style>
     </section>
   );
 }

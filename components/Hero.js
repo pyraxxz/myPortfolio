@@ -96,12 +96,19 @@ export default function Hero() {
 
         {/* Status line */}
         <FadeIn.Item>
-          <div className="flex items-center gap-2 mb-8 font-mono text-xs flex-wrap text-muted">
+          <div className="flex items-center gap-2 mb-2 font-mono text-xs flex-wrap text-muted">
             <span className="w-1.5 h-1.5 rounded-full bg-accent" style={{ animation: "pulse-dot 2s ease-in-out infinite" }} />
             <span>Azaman: v0.3.0 · Android (Kotlin/Compose)</span>
             <span className="text-muted/40">·</span>
             <span>Last deploy: Aug 2026</span>
           </div>
+        </FadeIn.Item>
+
+        {/* Founder line */}
+        <FadeIn.Item>
+          <p className="font-mono text-xs text-muted/60 mb-8">
+            Founder &amp; Lead Developer, Azaman Digital Limited — solo-built from v0.1.0
+          </p>
         </FadeIn.Item>
 
         {/* CTAs */}

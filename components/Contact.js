@@ -4,7 +4,8 @@ import { motion, useReducedMotion } from "framer-motion";
 
 const LINKS = [
   { label: "GitHub", href: "https://github.com/pyraxxz" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/taimako-shamsudeen-sugru" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/sugru-taimako-35356b229" },
+  { label: "WhatsApp", href: "https://chat.whatsapp.com/CjMuWLnowfPIFmBWI5ytO1" },
   { label: "Email", href: "mailto:taimakoshamsudeen@gmail.com" },
 ];
 
@@ -23,9 +24,16 @@ export default function Contact() {
         <h2 className="font-display text-2xl sm:text-3xl mb-4 text-foreground">
           Let's build something.
         </h2>
-        <p className="text-base text-muted mb-8 leading-relaxed">
+        <p className="text-base text-muted mb-6 leading-relaxed">
           Open to collaborations on fintech infrastructure, Android engineering, or vision-AI tooling.
           The fastest way to reach me is email.
+        </p>
+
+        {/* Constraint / opportunity paragraph */}
+        <p className="text-sm text-muted/70 mb-8 leading-relaxed max-w-lg italic">
+          Everything above was built on borrowed machines, one laptop at a time, over the past two years.
+          I've never had the luxury of ideal working conditions for this — only the work itself. Given real
+          tools and a real program behind me, I don't intend to slow down.
         </p>
 
         <div className="flex items-center gap-6 flex-wrap">

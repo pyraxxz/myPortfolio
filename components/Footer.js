@@ -4,7 +4,8 @@ import ThemeToggle from "./ThemeToggle";
 
 const LINKS = [
   { label: "GitHub", href: "https://github.com/pyraxxz" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/taimako-shamsudeen-sugru" },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/sugru-taimako-35356b229" },
+  { label: "WhatsApp", href: "https://chat.whatsapp.com/CjMuWLnowfPIFmBWI5ytO1" },
 ];
 
 export default function Footer() {
