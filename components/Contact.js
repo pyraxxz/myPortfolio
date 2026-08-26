@@ -3,13 +3,7 @@
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import TraceBox from "./TraceBox";
-
-const LINKS = [
-  { label: "GitHub", href: "https://github.com/pyraxxz" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/sugru-taimako-35356b229" },
-  { label: "WhatsApp", href: "https://chat.whatsapp.com/CjMuWLnowfPIFmBWI5ytO1" },
-  { label: "Email", href: "mailto:taimakoshamsudeen@gmail.com" },
-];
+import SocialIcons from "./SocialIcons";
 
 export default function Contact() {
   const reduceMotion = useReducedMotion();
@@ -51,18 +45,9 @@ export default function Contact() {
           </p>
         </TraceBox>
 
-        <div className="flex items-center gap-6 flex-wrap">
-          {LINKS.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-mono text-sm text-foreground underline decoration-1 underline-offset-4 decoration-muted/30 hover:decoration-accent transition-colors"
-            >
-              {link.label}
-            </a>
-          ))}
+        {/* Social icon buttons */}
+        <div className="flex items-center gap-3">
+          <SocialIcons size="sm" />
         </div>
       </motion.div>
     </section>

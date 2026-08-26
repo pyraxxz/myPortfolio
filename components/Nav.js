@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./ThemeToggle";
+import SocialIcons from "./SocialIcons";
 
 export default function Nav() {
   const [visible, setVisible] = useState(false);
@@ -41,7 +42,10 @@ export default function Nav() {
             >
               Sugru Taimako <span className="text-muted">(Pyrax)</span>
             </button>
-            <ThemeToggle />
+            <div className="flex items-center gap-2">
+              <SocialIcons size="nav" />
+              <ThemeToggle />
+            </div>
           </div>
         </motion.nav>
       )}

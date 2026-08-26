@@ -1,12 +1,7 @@
 "use client";
 
 import ThemeToggle from "./ThemeToggle";
-
-const LINKS = [
-  { label: "GitHub", href: "https://github.com/pyraxxz" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/sugru-taimako-35356b229" },
-  { label: "WhatsApp", href: "https://chat.whatsapp.com/CjMuWLnowfPIFmBWI5ytO1" },
-];
+import SocialIcons from "./SocialIcons";
 
 export default function Footer() {
   return (
@@ -17,18 +12,8 @@ export default function Footer() {
         </p>
         <ThemeToggle />
       </div>
-      <div className="flex items-center gap-4 pb-2">
-        {LINKS.map((link) => (
-          <a
-            key={link.label}
-            href={link.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-mono text-xs text-muted underline decoration-1 underline-offset-2 decoration-muted/30 hover:decoration-accent transition-colors"
-          >
-            {link.label}
-          </a>
-        ))}
+      <div className="flex items-center gap-2 pb-2">
+        <SocialIcons size="sm" />
       </div>
     </footer>
   );

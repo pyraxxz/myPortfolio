@@ -49,9 +49,9 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
   const helixHeight = vh > 0 ? Math.round(vh * helixHeightRatio) : 0;
   const helixTop = vh > 0 ? Math.round((vh - helixHeight) / 2) : 0;
 
-  // Helix parameters
-  const amplitude = isMobile ? 6 : 9;
-  const baseX = isMobile ? 16 : 22;
+  // Helix parameters — more prominent
+  const amplitude = isMobile ? 8 : 12;
+  const baseX = isMobile ? 18 : 26;
   const pitch = isMobile ? 80 : 110;
   const totalTwists = Math.max(3, helixHeight / pitch);
   const phase = reduceMotion ? 0 : scrollProgress * Math.PI * totalTwists * 2;
@@ -91,9 +91,9 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
     label: sectionLabels[id] || id,
   }));
 
-  // Dot position — follows the front strand's curve (X and Y both change)
+  // Dot position — follows the front strand's curve
   const dotY = scrollProgress * helixHeight;
-  const dotX = strandXAt(dotY, 0); // rides the front strand
+  const dotX = strandXAt(dotY, 0);
 
   const activeRungIndex = Math.min(
     rungCount - 1,
@@ -106,17 +106,14 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
 
   if (!vh || helixHeight <= 0) return null;
 
-  const svgWidth = isMobile ? 40 : 52;
+  const svgWidth = isMobile ? 44 : 58;
   const svgHeight = helixHeight;
 
   const gradId1 = "strand-grad-1";
   const gradId2 = "strand-grad-2";
   const glowId = "strand-glow";
 
-  // Label position: to the left of the dot, tracking its curved position
-  // The label is an HTML element positioned absolutely within the container
-  // We need to offset it to the left of dotX
-  const labelOffsetX = isMobile ? 28 : 36;
+  const labelOffsetX = isMobile ? 30 : 40;
 
   return (
     <div
@@ -136,18 +133,21 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
         className="pointer-events-none"
       >
         <defs>
+          {/* Front strand — bolder gradient */}
           <linearGradient id={gradId1} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.6" />
-            <stop offset="50%" stopColor="var(--accent)" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.6" />
+            <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.85" />
+            <stop offset="50%" stopColor="var(--accent)" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.85" />
           </linearGradient>
+          {/* Back strand — visible but receded */}
           <linearGradient id={gradId2} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.35" />
-            <stop offset="50%" stopColor="var(--accent)" stopOpacity="0.2" />
-            <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.35" />
+            <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.5" />
+            <stop offset="50%" stopColor="var(--accent)" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="var(--accent)" stopOpacity="0.5" />
           </linearGradient>
+          {/* Glow filter for the dot */}
           <filter id={glowId} x="-100%" y="-100%" width="300%" height="300%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feGaussianBlur stdDeviation="4" result="blur" />
             <feMerge>
               <feMergeNode in="blur" />
               <feMergeNode in="SourceGraphic" />
@@ -155,13 +155,13 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
           </filter>
         </defs>
 
-        {/* Back strand */}
+        {/* Back strand — thicker, more visible */}
         <path
           d={strand2Path}
           stroke={`url(#${gradId2})`}
-          strokeWidth="1.2"
+          strokeWidth="1.8"
           fill="none"
-          opacity="0.7"
+          opacity="0.75"
         />
 
         {/* Rungs */}
@@ -173,7 +173,7 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
           const midX = (x1 + x2) / 2;
           const depth1 = depthAt(rung.y, 0);
           const depth2 = depthAt(rung.y, Math.PI);
-          const rungOpacity = isNearActive ? 0.8 : 0.25;
+          const rungOpacity = isNearActive ? 0.9 : 0.4;
 
           return (
             <g key={rung.id}>
@@ -190,41 +190,41 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
                 onMouseLeave={() => setHoveredNode(null)}
               />
 
-              {/* Rung line */}
+              {/* Rung line — bolder */}
               <line
                 x1={x1}
                 y1={rung.y}
                 x2={x2}
                 y2={rung.y}
                 stroke="var(--accent)"
-                strokeWidth={isNearActive ? 2 : 1}
+                strokeWidth={isNearActive ? 2.5 : 1.5}
                 strokeLinecap="round"
                 className="pointer-events-none"
                 opacity={rungOpacity}
                 style={{ transition: "stroke-width 0.3s ease, opacity 0.3s ease" }}
               />
 
-              {/* Node dots at strand intersections */}
+              {/* Node dots at strand intersections — bigger */}
               <circle
                 cx={x1}
                 cy={rung.y}
-                r={depth1 > 0.5 ? 2.2 : 1.2}
+                r={depth1 > 0.5 ? 3 : 1.5}
                 fill="var(--accent)"
-                opacity={depth1 > 0.5 ? 0.7 : 0.25}
+                opacity={depth1 > 0.5 ? 0.8 : 0.3}
                 className="pointer-events-none"
               />
               <circle
                 cx={x2}
                 cy={rung.y}
-                r={depth2 > 0.5 ? 2.2 : 1.2}
+                r={depth2 > 0.5 ? 3 : 1.5}
                 fill="var(--accent)"
-                opacity={depth2 > 0.5 ? 0.7 : 0.25}
+                opacity={depth2 > 0.5 ? 0.8 : 0.3}
                 className="pointer-events-none"
               />
 
               {/* Hover dot */}
               {!isNearActive && isHovered && (
-                <circle cx={midX} cy={rung.y} r={2} fill="var(--muted)" className="pointer-events-none" />
+                <circle cx={midX} cy={rung.y} r={2.5} fill="var(--muted)" className="pointer-events-none" />
               )}
 
               {/* Connector line to label tag */}
@@ -232,7 +232,7 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
                 <line
                   x1={Math.min(x1, x2)}
                   y1={rung.y}
-                  x2={Math.min(x1, x2) - 4}
+                  x2={Math.min(x1, x2) - 5}
                   y2={rung.y}
                   stroke={isNearActive ? "var(--accent)" : "var(--muted)"}
                   strokeWidth="1"
@@ -244,20 +244,20 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
           );
         })}
 
-        {/* Front strand */}
+        {/* Front strand — bolder */}
         <path
           d={strand1Path}
           stroke={`url(#${gradId1})`}
-          strokeWidth="2"
+          strokeWidth="2.5"
           fill="none"
-          opacity="0.9"
+          opacity="0.95"
         />
 
-        {/* Connector line from dot to label (curves left) */}
+        {/* Connector line from dot to label */}
         <line
           x1={dotX}
           y1={dotY}
-          x2={Math.max(0, dotX - 6)}
+          x2={Math.max(0, dotX - 8)}
           y2={dotY}
           stroke="var(--accent)"
           strokeWidth="1"
@@ -265,12 +265,12 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
           className="pointer-events-none"
         />
 
-        {/* The moving dot — follows the front strand curve */}
+        {/* The moving dot — with glow */}
         <g filter={`url(#${glowId})`}>
           <circle
             cx={dotX}
             cy={dotY}
-            r={4}
+            r={5}
             fill="var(--accent)"
             className="pointer-events-none"
           />
@@ -279,7 +279,7 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
         <circle
           cx={dotX}
           cy={dotY}
-          r={2.5}
+          r={3}
           fill="var(--accent)"
           className="pointer-events-none"
         />
@@ -287,11 +287,11 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
         <circle
           cx={dotX}
           cy={dotY}
-          r={7}
+          r={8}
           fill="none"
           stroke="var(--accent)"
-          strokeWidth="0.8"
-          opacity="0.25"
+          strokeWidth="1"
+          opacity="0.3"
           className="pointer-events-none"
         />
       </svg>
@@ -300,9 +300,6 @@ export default function ScrollStrand({ activeSection, sectionIds, sectionLabels 
       <div
         className="absolute pointer-events-none"
         style={{
-          // Position the label to the left of the dot's actual X position
-          // dotX is in SVG coordinates; the container is svgWidth wide
-          // We want the label's right edge to be just left of the dot
           right: svgWidth - dotX + labelOffsetX,
           top: dotY - 9,
           transition: reduceMotion ? "top 0.3s ease, right 0.3s ease" : "none",
