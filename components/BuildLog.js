@@ -6,14 +6,14 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 const ENTRIES = [
   {
     version: "v0.1.0",
-    date: "Jan 2025",
+    date: "Jan 2026",
     title: "Flutter MVP",
     desc: "First working build. P2P transfer + Susu. Kotlin backend on Firebase.",
     status: "shipped",
   },
   {
     version: "v0.2.0",
-    date: "Mar 2025",
+    date: "Mar 2026",
     title: "Compose rewrite",
     desc: "Full rewrite to Jetpack Compose. Escrow logic added. Marketplace scaffolded.",
     status: "shipped",
